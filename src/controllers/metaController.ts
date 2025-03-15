@@ -2,11 +2,13 @@ import db from "../utils/db";
 
 export const getAllMetas = async (req, res) => {
   try {
-    const allUsers = await db.meta.findMany();
+    const allMetas = await db.meta.findMany();
 
-    res.status(200).json({ data: allUsers });
-  } catch (err) {
+    res.status(200).json({ data: allMetas });
+  } catch (error) {
+    const err = error.message;
     console.log(err);
+    res.status(400).json({ message: err });
   }
 };
 
@@ -19,8 +21,10 @@ export const getMetaById = async (req, res) => {
       },
     });
     res.status(200).json({ data: meta });
-  } catch (err) {
+  } catch (error) {
+    const err = error.message;
     console.log(err);
+    res.status(400).json({ message: err });
   }
 };
 
@@ -32,8 +36,10 @@ export const createMeta = async (req, res) => {
       data: metaData,
     });
     res.status(200).json({ data: meta });
-  } catch (err) {
+  } catch (error) {
+    const err = error.message;
     console.log(err);
+    res.status(400).json({ message: err });
   }
 };
 
@@ -49,8 +55,10 @@ export const updateMeta = async (req, res) => {
       data: metaData,
     });
     res.status(200).json({ data: meta });
-  } catch (err) {
+  } catch (error) {
+    const err = error.message;
     console.log(err);
+    res.status(400).json({ message: err });
   }
 };
 
@@ -64,7 +72,9 @@ export const deleteMeta = async (req, res) => {
     });
 
     res.status(200).json({ data: {} });
-  } catch (err) {
+  } catch (error) {
+    const err = error.message;
     console.log(err);
+    res.status(400).json({ message: err });
   }
 };

@@ -9,5 +9,9 @@ export const createFriendship = async (req, res) => {
     });
 
     res.status(200).json({ data: friendship });
-  } catch (error) {}
+  } catch (error) {
+    const err = error.message;
+    console.log(err);
+    res.status(400).json({ message: err });
+  }
 };

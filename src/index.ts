@@ -4,6 +4,10 @@ import userRouter from "./routes/userRoutes";
 import authRouter from "./routes/authRoutes";
 import metaRouter from "./routes/metaRoutes";
 import friendshipRouter from "./routes/friendshipRoutes";
+import groupRouter from "./routes/groupRoutes";
+import userOnGroupRouter from "./routes/userOnGroupRoutes";
+import noteRouter from "./routes/noteRoutes";
+import bookRouter from "./routes/bookRoutes";
 
 const app = express();
 
@@ -20,6 +24,10 @@ app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/meta", metaRouter);
 app.use("/friendship", friendshipRouter);
+app.use("/groups", groupRouter);
+app.use("/userOnGroup", userOnGroupRouter);
+app.use("/books", bookRouter);
+app.use("/notes", noteRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
