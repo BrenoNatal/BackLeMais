@@ -8,6 +8,7 @@ import groupRouter from "./routes/groupRoutes";
 import userOnGroupRouter from "./routes/userOnGroupRoutes";
 import noteRouter from "./routes/noteRoutes";
 import bookRouter from "./routes/bookRoutes";
+import usersOnBooksRouter from "./routes/usersOnBooksRoutes";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/groups", groupRouter);
 app.use("/userOnGroup", userOnGroupRouter);
 app.use("/books", bookRouter);
 app.use("/notes", noteRouter);
+app.use("/usersOnBooks", usersOnBooksRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
