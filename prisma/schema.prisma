@@ -1,0 +1,232 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "app/generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  password        String
+  name            String
+  profileImageUrl String            @default("https://uxxggsabskosuakbqpji.supabase.co/storage/v1/object/public/profile-images/profile-images/profiles/default.png")
+  friendOf        Friendship[]      @relation("friendOf")
+  friends         Friendship[]      @relation("user")
+  groups          UserOnGroup[]
+  books           UserOnBook[]
+  goals           Goal[]
+  notes           Note[]
+  posts           Post[]
+  categories      Category[]
+  achievements    UserAchievement[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Friendship {
+  friendOf User             @relation("friendOf", fields: [friendId], references: [id])
+  friendId String
+  user     User             @relation("user", fields: [userId], references: [id])
+  userId   String
+  status   FriendshipStatus @default(PENDING)
+
+  @@id(name: "id", [friendId, userId])
+}
+
+model Book {
+  id            String       @id @default(uuid())
+  olWorkId      String
+  olBookId      String?
+  cover         String
+  title         String
+  authors       String[]
+  description   String
+  publishers    String[]
+  publishDate   String
+  numberOfPages String
+  users         UserOnBook[]
+}
+
+model UserOnBook {
+  book           Book                 @relation(fields: [bookId], references: [id])
+  bookId         String
+  user           User                 @relation(fields: [userId], references: [id])
+  userId         String
+  notes          Note[]
+  bookCategories BookCategoryOnBook[]
+  status         BookStatus           @default(LENDO)
+  currentPage    Int                  @default(0)
+  totalPages     Int?
+
+  @@id([bookId, userId])
+}
+
+model Note {
+  id               String     @id @default(uuid())
+  title            String
+  body             String
+  user             User       @relation(fields: [userId], references: [id])
+  userId           String
+  userOnBook       UserOnBook @relation(fields: [userOnBookBookId, userOnBookUserId], references: [bookId, userId], onDelete: Cascade)
+  userOnBookBookId String
+  userOnBookUserId String
+  category         Category   @relation(fields: [categoryId], references: [id])
+  categoryId       String
+
+  @@unique([title, categoryId, userOnBookBookId])
+}
+
+model BookCategoryOnBook {
+  category         Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId       String
+  userOnBook       UserOnBook @relation(fields: [userOnBookBookId, userOnBookUserId], references: [bookId, userId], onDelete: Cascade)
+  userOnBookBookId String
+  userOnBookUserId String
+
+  @@id([categoryId, userOnBookBookId, userOnBookUserId])
+}
+
+model Category {
+  id     String               @id @default(uuid())
+  name   String
+  type   CategoryType
+  user   User                 @relation(fields: [userId], references: [id])
+  userId String
+  notes  Note[]
+  books  BookCategoryOnBook[]
+  goals  Goal[]
+
+  @@unique([name, userId, type])
+}
+
+model Goal {
+  id          String     @id @default(uuid())
+  name        String
+  description String
+  type        TypeGoal
+  category    Category[]
+  progress    Int        @default(0)
+  objective   Int
+  endsAt      DateTime
+  createdAt   DateTime   @default(now())
+  status      GoalStatus @default(ONGOING)
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  group   Group?  @relation(fields: [groupId], references: [id])
+  groupId String?
+}
+
+model Achievement {
+  id          String            @id @default(uuid())
+  name        String
+  description String
+  type        AchievementType
+  threshold   Int
+  iconPath    String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  achievementId String
+  progress      Int         @default(0)
+  unlocked      Boolean     @default(false)
+  unlockedAt    DateTime?
+
+  @@id([userId, achievementId])
+}
+
+model Group {
+  id            String        @id @unique @default(uuid())
+  name          String
+  description   String
+  groupImageUrl String        @default("https://uxxggsabskosuakbqpji.supabase.co/storage/v1/object/public/group-images/group-images/groups/default.jpg")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  users         UserOnGroup[]
+  posts         Post[]
+  goals         Goal[]
+}
+
+model UserOnGroup {
+  group     Group      @relation(fields: [groupId], references: [id])
+  groupId   String
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  type      TypeMember @default(MEMBER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@id([groupId, userId])
+}
+
+model Post {
+  id        String   @id @unique @default(uuid())
+  title     String
+  body      String
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum BookStatus {
+  LENDO
+  PLANEJO_LER
+  COMPLETO
+  EM_ESPERA
+  RELENDO
+  ABANDONADO
+}
+
+enum CategoryType {
+  NOTE
+  BOOK
+}
+
+enum TypeGoal {
+  PAGES
+  BOOKS
+}
+
+enum TypeMember {
+  CREATOR
+  ADMIN
+  MEMBER
+}
+
+enum FriendshipStatus {
+  PENDING
+  FRIEND
+}
+
+enum GoalStatus {
+  ONGOING
+  COMPLETED
+  EXPIRED
+}
+
+enum AchievementType {
+  PAGES_READ
+  BOOKS_COMPLETED
+  DIVERSE_CATEGORIES
+  GOALS_COMPLETED
+}
