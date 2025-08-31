@@ -2,10 +2,8 @@ import { Request, Response } from "express";
 import db from "../utils/db";
 import { AchievementType } from "../../prisma/app/generated/prisma/client";
 
-// Inicializar conquistas padrão
 export const seedAchievementsService = async () => {
   const defaultAchievements = [
-    // Páginas lidas
     {
       name: "Leitor Iniciante",
       description: "Leu 100 páginas",
@@ -25,7 +23,6 @@ export const seedAchievementsService = async () => {
       threshold: 1000,
     },
 
-    // Livros completos
     {
       name: "Primeiro Livro",
       description: "Completou 1 livro",
@@ -45,7 +42,6 @@ export const seedAchievementsService = async () => {
       threshold: 10,
     },
 
-    // Categorias diferentes
     {
       name: "Explorador de Gênero",
       description: "Leu livros de 1 categoria",
@@ -65,7 +61,6 @@ export const seedAchievementsService = async () => {
       threshold: 10,
     },
 
-    // Metas concluídas
     {
       name: "Primeira Conquista",
       description: "Completou 1 meta",
@@ -84,50 +79,67 @@ export const seedAchievementsService = async () => {
       type: "GOALS_COMPLETED",
       threshold: 10,
     },
+    {
+      name: "Primeira Semana de Leitura",
+      description: "Manteve uma streak de 1 semana (7 dias) de leitura",
+      type: "MAX_STREAK_WEEKS",
+      threshold: 1,
+    },
+    {
+      name: "Leitor Persistente",
+      description: "Manteve uma streak de 5 semanas (35 dias) de leitura",
+      type: "MAX_STREAK_WEEKS",
+      threshold: 5,
+    },
+    {
+      name: "Lenda da Leitura",
+      description: "Manteve uma streak de 10 semanas (70 dias) de leitura",
+      type: "MAX_STREAK_WEEKS",
+      threshold: 10,
+    },
   ];
 
   for (const achievement of defaultAchievements) {
-    const exists = await db.achievement.findFirst({
+    await db.achievement.upsert({
       where: {
-        name: achievement.name,
-        type: achievement.type as AchievementType,
-      },
-    });
-
-    if (!exists) {
-      await db.achievement.create({
-        data: {
-          name: achievement.name,
-          description: achievement.description,
+        type_threshold: {
           type: achievement.type as AchievementType,
           threshold: achievement.threshold,
         },
-      });
-    }
+      },
+      update: {
+        name: achievement.name,
+        description: achievement.description,
+      },
+      create: {
+        name: achievement.name,
+        description: achievement.description,
+        type: achievement.type as AchievementType,
+        threshold: achievement.threshold,
+      },
+    });
   }
 };
 
-// Calcular páginas lidas
 const calculatePagesReadAchievementsService = async (userId: string) => {
-  // Obter todas as relações userOnBook do usuário
   const userBooks = await db.userOnBook.findMany({
     where: { userId },
   });
 
-  // Calcular total de páginas lidas
   const totalPagesRead = userBooks.reduce(
     (total, book) => total + book.currentPage,
     0
   );
 
-  // Buscar conquistas de páginas lidas
   const achievements = await db.achievement.findMany({
     where: { type: "PAGES_READ" },
     orderBy: { threshold: "asc" },
   });
 
-  // Atualizar cada conquista
   for (const achievement of achievements) {
+    const progress = Math.min(totalPagesRead, achievement.threshold);
+    const unlocked = totalPagesRead >= achievement.threshold;
+
     const userAchievement = await db.userAchievement.findUnique({
       where: {
         userId_achievementId: {
@@ -137,49 +149,37 @@ const calculatePagesReadAchievementsService = async (userId: string) => {
       },
     });
 
-    const progress = Math.min(totalPagesRead, achievement.threshold);
-    const unlocked = totalPagesRead >= achievement.threshold;
-
-    if (!userAchievement) {
-      await db.userAchievement.create({
-        data: {
+    await db.userAchievement.upsert({
+      where: {
+        userId_achievementId: {
           userId,
           achievementId: achievement.id,
-          progress,
-          unlocked,
-          unlockedAt: unlocked ? new Date() : null,
         },
-      });
-    } else if (
-      progress !== userAchievement.progress ||
-      unlocked !== userAchievement.unlocked
-    ) {
-      await db.userAchievement.update({
-        where: {
-          userId_achievementId: {
-            userId,
-            achievementId: achievement.id,
-          },
-        },
-        data: {
-          progress,
-          unlocked,
-          unlockedAt:
-            unlocked && !userAchievement.unlocked
-              ? new Date()
-              : userAchievement.unlockedAt,
-        },
-      });
-    }
+      },
+      create: {
+        userId,
+        achievementId: achievement.id,
+        progress,
+        unlocked,
+        unlockedAt: unlocked ? new Date() : null,
+      },
+      update: {
+        progress,
+        unlocked,
+        unlockedAt:
+          unlocked && !userAchievement?.unlocked
+            ? new Date()
+            : userAchievement?.unlockedAt ?? null,
+      },
+    });
   }
 };
 
-// Calcular livros completados
 const calculateBooksCompletedAchievementsService = async (userId: string) => {
   const completedBooksCount = await db.userOnBook.count({
     where: {
       userId,
-      status: "COMPLETO",
+      status: { in: ["COMPLETO", "RELENDO"] },
     },
   });
 
@@ -189,6 +189,9 @@ const calculateBooksCompletedAchievementsService = async (userId: string) => {
   });
 
   for (const achievement of achievements) {
+    const progress = Math.min(completedBooksCount, achievement.threshold);
+    const unlocked = completedBooksCount >= achievement.threshold;
+
     const userAchievement = await db.userAchievement.findUnique({
       where: {
         userId_achievementId: {
@@ -198,52 +201,39 @@ const calculateBooksCompletedAchievementsService = async (userId: string) => {
       },
     });
 
-    const progress = Math.min(completedBooksCount, achievement.threshold);
-    const unlocked = completedBooksCount >= achievement.threshold;
-
-    if (!userAchievement) {
-      await db.userAchievement.create({
-        data: {
+    await db.userAchievement.upsert({
+      where: {
+        userId_achievementId: {
           userId,
           achievementId: achievement.id,
-          progress,
-          unlocked,
-          unlockedAt: unlocked ? new Date() : null,
         },
-      });
-    } else if (
-      progress !== userAchievement.progress ||
-      unlocked !== userAchievement.unlocked
-    ) {
-      await db.userAchievement.update({
-        where: {
-          userId_achievementId: {
-            userId,
-            achievementId: achievement.id,
-          },
-        },
-        data: {
-          progress,
-          unlocked,
-          unlockedAt:
-            unlocked && !userAchievement.unlocked
-              ? new Date()
-              : userAchievement.unlockedAt,
-        },
-      });
-    }
+      },
+      create: {
+        userId,
+        achievementId: achievement.id,
+        progress,
+        unlocked,
+        unlockedAt: unlocked ? new Date() : null,
+      },
+      update: {
+        progress,
+        unlocked,
+        unlockedAt:
+          unlocked && !userAchievement?.unlocked
+            ? new Date()
+            : userAchievement?.unlockedAt ?? null,
+      },
+    });
   }
 };
 
-// Calcular categorias diversas
 const calculateDiverseCategoriesAchievementsService = async (
   userId: string
 ) => {
-  // Obter livros completados com suas categorias
   const completedBooks = await db.userOnBook.findMany({
     where: {
       userId,
-      status: "COMPLETO",
+      status: { in: ["COMPLETO", "RELENDO"] },
     },
     include: {
       bookCategories: {
@@ -252,7 +242,6 @@ const calculateDiverseCategoriesAchievementsService = async (
     },
   });
 
-  // Extrair categorias únicas
   const uniqueCategoryIds = new Set<string>();
   completedBooks.forEach((book) => {
     book.bookCategories.forEach((bc) => {
@@ -270,6 +259,9 @@ const calculateDiverseCategoriesAchievementsService = async (
   });
 
   for (const achievement of achievements) {
+    const progress = Math.min(uniqueCategoriesCount, achievement.threshold);
+    const unlocked = uniqueCategoriesCount >= achievement.threshold;
+
     const userAchievement = await db.userAchievement.findUnique({
       where: {
         userId_achievementId: {
@@ -279,44 +271,32 @@ const calculateDiverseCategoriesAchievementsService = async (
       },
     });
 
-    const progress = Math.min(uniqueCategoriesCount, achievement.threshold);
-    const unlocked = uniqueCategoriesCount >= achievement.threshold;
-
-    if (!userAchievement) {
-      await db.userAchievement.create({
-        data: {
+    await db.userAchievement.upsert({
+      where: {
+        userId_achievementId: {
           userId,
           achievementId: achievement.id,
-          progress,
-          unlocked,
-          unlockedAt: unlocked ? new Date() : null,
         },
-      });
-    } else if (
-      progress !== userAchievement.progress ||
-      unlocked !== userAchievement.unlocked
-    ) {
-      await db.userAchievement.update({
-        where: {
-          userId_achievementId: {
-            userId,
-            achievementId: achievement.id,
-          },
-        },
-        data: {
-          progress,
-          unlocked,
-          unlockedAt:
-            unlocked && !userAchievement.unlocked
-              ? new Date()
-              : userAchievement.unlockedAt,
-        },
-      });
-    }
+      },
+      create: {
+        userId,
+        achievementId: achievement.id,
+        progress,
+        unlocked,
+        unlockedAt: unlocked ? new Date() : null,
+      },
+      update: {
+        progress,
+        unlocked,
+        unlockedAt:
+          unlocked && !userAchievement?.unlocked
+            ? new Date()
+            : userAchievement?.unlockedAt ?? null,
+      },
+    });
   }
 };
 
-// Calcular metas concluídas
 const calculateGoalsCompletedAchievementsService = async (userId: string) => {
   const completedGoalsCount = await db.goal.count({
     where: {
@@ -331,6 +311,9 @@ const calculateGoalsCompletedAchievementsService = async (userId: string) => {
   });
 
   for (const achievement of achievements) {
+    const progress = Math.min(completedGoalsCount, achievement.threshold);
+    const unlocked = completedGoalsCount >= achievement.threshold;
+
     const userAchievement = await db.userAchievement.findUnique({
       where: {
         userId_achievementId: {
@@ -340,44 +323,81 @@ const calculateGoalsCompletedAchievementsService = async (userId: string) => {
       },
     });
 
-    const progress = Math.min(completedGoalsCount, achievement.threshold);
-    const unlocked = completedGoalsCount >= achievement.threshold;
-
-    if (!userAchievement) {
-      await db.userAchievement.create({
-        data: {
+    await db.userAchievement.upsert({
+      where: {
+        userId_achievementId: {
           userId,
           achievementId: achievement.id,
-          progress,
-          unlocked,
-          unlockedAt: unlocked ? new Date() : null,
         },
-      });
-    } else if (
-      progress !== userAchievement.progress ||
-      unlocked !== userAchievement.unlocked
-    ) {
-      await db.userAchievement.update({
-        where: {
-          userId_achievementId: {
-            userId,
-            achievementId: achievement.id,
-          },
-        },
-        data: {
-          progress,
-          unlocked,
-          unlockedAt:
-            unlocked && !userAchievement.unlocked
-              ? new Date()
-              : userAchievement.unlockedAt,
-        },
-      });
-    }
+      },
+      create: {
+        userId,
+        achievementId: achievement.id,
+        progress,
+        unlocked,
+        unlockedAt: unlocked ? new Date() : null,
+      },
+      update: {
+        progress,
+        unlocked,
+        unlockedAt:
+          unlocked && !userAchievement?.unlocked
+            ? new Date()
+            : userAchievement?.unlockedAt ?? null,
+      },
+    });
   }
 };
 
-// Função de serviço
+const calculateMaxStreakWeeksAchievementsService = async (userId: string) => {
+  const userStreak = await db.userStreak.findUnique({ where: { userId } });
+  const maxStreak = userStreak?.max ?? 0;
+  const maxWeeks = Math.floor(maxStreak / 7);
+
+  const achievements = await db.achievement.findMany({
+    where: { type: "MAX_STREAK_WEEKS" },
+    orderBy: { threshold: "asc" },
+  });
+
+  for (const achievement of achievements) {
+    const progress = Math.min(maxWeeks, achievement.threshold);
+    const unlocked = maxWeeks >= achievement.threshold;
+
+    const userAchievement = await db.userAchievement.findUnique({
+      where: {
+        userId_achievementId: {
+          userId,
+          achievementId: achievement.id,
+        },
+      },
+    });
+
+    await db.userAchievement.upsert({
+      where: {
+        userId_achievementId: {
+          userId,
+          achievementId: achievement.id,
+        },
+      },
+      create: {
+        userId,
+        achievementId: achievement.id,
+        progress,
+        unlocked,
+        unlockedAt: unlocked ? new Date() : null,
+      },
+      update: {
+        progress,
+        unlocked,
+        unlockedAt:
+          unlocked && !userAchievement?.unlocked
+            ? new Date()
+            : userAchievement?.unlockedAt ?? null,
+      },
+    });
+  }
+};
+
 export const calculateUserAchievementsService = async (userId: string) => {
   try {
     await Promise.all([
@@ -385,36 +405,30 @@ export const calculateUserAchievementsService = async (userId: string) => {
       calculateBooksCompletedAchievementsService(userId),
       calculateDiverseCategoriesAchievementsService(userId),
       calculateGoalsCompletedAchievementsService(userId),
+      calculateMaxStreakWeeksAchievementsService(userId),
     ]);
   } catch (error) {
-    throw error; // Correto para uma função de serviço
+    throw error;
   }
 };
 
-// Buscar conquistas de um usuário
 export const getUserAchievements = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
 
-    // Garantir que conquistas padrão existem
     await seedAchievementsService();
 
-    // Calcular conquistas do usuário
     await calculateUserAchievementsService(userId);
 
-    // Buscar conquistas com progresso
     const achievements = await db.achievement.findMany({
       include: {
         users: {
           where: { userId },
         },
       },
-      orderBy: {
-        type: "asc",
-      },
+      orderBy: [{ type: "asc" }, { threshold: "asc" }],
     });
 
-    // Formatar dados para o frontend
     const groupedAchievements = {};
 
     achievements.forEach((achievement) => {
@@ -443,7 +457,6 @@ export const getUserAchievements = async (req: Request, res: Response) => {
   }
 };
 
-// Endpoint HTTP para recalcular manualmente
 export const calculateUserAchievements = async (
   req: Request,
   res: Response
@@ -453,6 +466,6 @@ export const calculateUserAchievements = async (
     await calculateUserAchievementsService(userId);
     res.status(200).json({ message: "Conquistas atualizadas com sucesso" });
   } catch (error) {
-    res.status(400).json({ message: error.message }); // Correto para um endpoint
+    res.status(400).json({ message: error.message });
   }
 };

@@ -8,8 +8,12 @@ const getFriendshipRequestsSentBy = async (userId: string) => {
     },
     select: {
       status: true,
-      user: { select: { id: true, name: true, profileImageUrl: true } },
-      friendOf: { select: { id: true, name: true, profileImageUrl: true } },
+      user: {
+        select: { id: true, name: true, profileImageUrl: true, username: true },
+      },
+      friendOf: {
+        select: { id: true, name: true, profileImageUrl: true, username: true },
+      },
     },
   });
 
@@ -24,8 +28,12 @@ const getFriendshipRequestsReceivedBy = async (userId: string) => {
     },
     select: {
       status: true,
-      user: { select: { id: true, name: true, profileImageUrl: true } },
-      friendOf: { select: { id: true, name: true, profileImageUrl: true } },
+      user: {
+        select: { id: true, name: true, profileImageUrl: true, username: true },
+      },
+      friendOf: {
+        select: { id: true, name: true, profileImageUrl: true, username: true },
+      },
     },
   });
 
@@ -54,8 +62,12 @@ export const getFriends = async (userId: string) => {
     },
     select: {
       status: true,
-      user: { select: { id: true, name: true, profileImageUrl: true } },
-      friendOf: { select: { id: true, name: true, profileImageUrl: true } },
+      user: {
+        select: { id: true, name: true, profileImageUrl: true, username: true },
+      },
+      friendOf: {
+        select: { id: true, name: true, profileImageUrl: true, username: true },
+      },
     },
   });
 

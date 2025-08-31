@@ -14,6 +14,7 @@ import postRouter from "./routes/postRoutes";
 import categoryRouter from "./routes/categoryRoutes";
 import bookCategoryOnBookRouter from "./routes/bookCategoryOnBookRoutes";
 import achievementRouter from "./routes/achievementRoutes";
+import userStreakRouter from "./routes/userStreakRoutes";
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use("/bookCategoryOnBook", bookCategoryOnBookRouter);
 app.use("/userOnBook", userOnBookRouter);
 app.use("/post", postRouter);
 app.use("/achievements", achievementRouter);
+app.use("/userStreak", userStreakRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

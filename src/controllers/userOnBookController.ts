@@ -1,13 +1,8 @@
 import { Request, Response } from "express";
 import db from "../utils/db";
 import { calculateUserAchievementsService } from "./achievementController";
-import {
-  BookCategoryOnBook,
-  Category,
-  Goal,
-  TypeGoal,
-} from "../../prisma/app/generated/prisma/client";
 import { updateUserGoals } from "./userController";
+import { updateUserStreak } from "./userStreakController";
 
 // GET: Listagem e busca
 export const getUserBooksIds = async (req: Request, res: Response) => {
@@ -140,6 +135,13 @@ export const updateUserOnBook = async (req: Request, res: Response) => {
       },
       data: data,
     });
+
+    if (
+      data.currentPage !== undefined &&
+      data.currentPage > userOnBookPrev.currentPage
+    ) {
+      await updateUserStreak(userId);
+    }
 
     if (data.status == "COMPLETO") {
       updateUserGoals(userId, userOnBookPrev.bookCategories, 1, "BOOKS");

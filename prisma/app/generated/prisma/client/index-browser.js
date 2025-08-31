@@ -125,6 +125,7 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   name: 'name',
+  username: 'username',
   profileImageUrl: 'profileImageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -213,6 +214,17 @@ exports.Prisma.UserAchievementScalarFieldEnum = {
   unlockedAt: 'unlockedAt'
 };
 
+exports.Prisma.UserStreakScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  current: 'current',
+  max: 'max',
+  completed7: 'completed7',
+  lastReadAt: 'lastReadAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.GroupScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -288,7 +300,8 @@ exports.AchievementType = exports.$Enums.AchievementType = {
   PAGES_READ: 'PAGES_READ',
   BOOKS_COMPLETED: 'BOOKS_COMPLETED',
   DIVERSE_CATEGORIES: 'DIVERSE_CATEGORIES',
-  GOALS_COMPLETED: 'GOALS_COMPLETED'
+  GOALS_COMPLETED: 'GOALS_COMPLETED',
+  MAX_STREAK_WEEKS: 'MAX_STREAK_WEEKS'
 };
 
 exports.TypeMember = exports.$Enums.TypeMember = {
@@ -308,6 +321,7 @@ exports.Prisma.ModelName = {
   Goal: 'Goal',
   Achievement: 'Achievement',
   UserAchievement: 'UserAchievement',
+  UserStreak: 'UserStreak',
   Group: 'Group',
   UserOnGroup: 'UserOnGroup',
   Post: 'Post'

@@ -63,6 +63,22 @@ export const register = async (req, res) => {
 
     userData.password = hashSync(userData.password, 12);
 
+    const existinguseremail = await db.user.findUnique({
+      where: { email: userData.email },
+    });
+    if (existinguseremail) {
+      res.status(400);
+      throw new Error("Email em uso.");
+    }
+
+    const existingusername = await db.user.findUnique({
+      where: { username: userData.username },
+    });
+    if (existingusername) {
+      res.status(400);
+      throw new Error("Username em uso, escolha outro.");
+    }
+
     const user = await db.user.create({
       data: userData,
     });
@@ -107,6 +123,7 @@ export const getAllUsers = async (req, res) => {
         id: true,
         name: true,
         profileImageUrl: true,
+        username: true,
       },
     });
 
@@ -125,7 +142,7 @@ export const getUserById = async (req, res) => {
       where: {
         id: userId,
       },
-      select: { name: true },
+      select: { name: true, username: true },
     });
     res.status(200).json({ data: user });
   } catch (error) {

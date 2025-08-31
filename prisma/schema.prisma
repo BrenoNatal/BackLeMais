@@ -19,6 +19,7 @@ model User {
   email           String            @unique
   password        String
   name            String
+  username        String            @unique
   profileImageUrl String            @default("https://uxxggsabskosuakbqpji.supabase.co/storage/v1/object/public/profile-images/profile-images/profiles/default.png")
   friendOf        Friendship[]      @relation("friendOf")
   friends         Friendship[]      @relation("user")
@@ -29,6 +30,7 @@ model User {
   posts           Post[]
   categories      Category[]
   achievements    UserAchievement[]
+  userStreak      UserStreak?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 }
@@ -138,6 +140,8 @@ model Achievement {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   users       UserAchievement[]
+
+  @@unique([type, threshold])
 }
 
 model UserAchievement {
@@ -150,6 +154,18 @@ model UserAchievement {
   unlockedAt    DateTime?
 
   @@id([userId, achievementId])
+}
+
+model UserStreak {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @unique
+  current    Int      @default(0)
+  max        Int      @default(0)
+  completed7 Int      @default(0)
+  lastReadAt DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Group {
@@ -229,4 +245,5 @@ enum AchievementType {
   BOOKS_COMPLETED
   DIVERSE_CATEGORIES
   GOALS_COMPLETED
+  MAX_STREAK_WEEKS
 }

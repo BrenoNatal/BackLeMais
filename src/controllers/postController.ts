@@ -28,7 +28,14 @@ export const getPostByGroupId = async (req: Request, res: Response) => {
       include: {
         posts: {
           include: {
-            user: { select: { name: true, id: true, profileImageUrl: true } },
+            user: {
+              select: {
+                name: true,
+                id: true,
+                profileImageUrl: true,
+                username: true,
+              },
+            },
           },
         },
       },
