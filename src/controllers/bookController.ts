@@ -75,16 +75,18 @@ export const getUserBooksByIds = async (req: Request, res: Response) => {
   }
 };
 
-export const createBook = async (req: Request, res: Response) => {
+export const createBook = async (req, res) => {
   try {
     const bookData = req.body;
 
     const book = await db.book.create({
       data: bookData,
     });
+
     res.status(200).json({ data: book });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    const err = error.message;
+    res.status(400).json({ message: err });
   }
 };
 
