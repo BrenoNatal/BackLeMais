@@ -11,6 +11,8 @@ import {
 } from "../../prisma/app/generated/prisma/client";
 import { updateGoalProgress } from "./goalController";
 import { supabase } from "../utils/supabase";
+import { sendVerificationEmail } from "../services/emailService";
+import { v4 as uuidv4 } from "uuid";
 
 export const updateUserGoals = async (
   userId: string,
@@ -62,18 +64,21 @@ export const register = async (req, res) => {
     }
 
     userData.password = hashSync(userData.password, 12);
+    userData.verifyToken = uuidv4();
 
-    const existinguseremail = await db.user.findUnique({
+    const existingUser = await db.user.findUnique({
       where: { email: userData.email },
     });
-    if (existinguseremail) {
+
+    if (existingUser) {
       res.status(400);
-      throw new Error("Email em uso.");
+      throw new Error("Email já cadastrado.");
     }
 
     const existingusername = await db.user.findUnique({
       where: { username: userData.username },
     });
+
     if (existingusername) {
       res.status(400);
       throw new Error("Username em uso, escolha outro.");
@@ -99,10 +104,11 @@ export const register = async (req, res) => {
 
     const token = generateToken(user);
 
+    // envia email de confirmação
+    await sendVerificationEmail(user.email, user.verifyToken);
+
     res.status(200).json({
-      token: token,
-      userId: user.id,
-      name: user.name,
+      message: "Usuário registrado. Verifique seu email para ativar a conta.",
     });
   } catch (error) {
     const err = error.message;
@@ -215,13 +221,90 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await db.user.delete({
-      where: {
-        id: userId,
-      },
+
+    const deletedRecords = db.$transaction(async (prisma) => {
+      // Captura instâncias deletadas
+      const userToDelete = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+      const categoriesToDelete = await prisma.category.findMany({
+        where: { userId },
+      });
+      const achievementsToDelete = await prisma.userAchievement.findMany({
+        where: { userId },
+      });
+      const friendshipsToDelete = await prisma.friendship.findMany({
+        where: { OR: [{ friendId: userId }, { userId: userId }] },
+      });
+      const postsToDelete = await prisma.post.findMany({ where: { userId } });
+      const goalsToDelete = await prisma.goal.findMany({ where: { userId } });
+      const userStreakToDelete = await prisma.userStreak.findUnique({
+        where: { userId },
+      });
+      const userOnGroupsDeleted = await prisma.userOnGroup.findMany({
+        where: { userId },
+      });
+
+      // Livros e UserOnBook
+      const userBooks = await prisma.userOnBook.findMany({
+        where: { userId },
+        select: { bookId: true },
+      });
+      const bookIds = userBooks.map((b) => b.bookId);
+      let booksToDelete = [];
+
+      if (bookIds.length > 0) {
+        const booksWithCounts = await prisma.userOnBook.groupBy({
+          by: ["bookId"],
+          where: { bookId: { in: bookIds } },
+          _count: { userId: true },
+        });
+        booksToDelete = booksWithCounts
+          .filter((b) => b._count.userId === 1)
+          .map((b) => b.bookId);
+      }
+
+      const booksDeleted = await prisma.book.findMany({
+        where: { id: { in: booksToDelete } },
+      });
+      const userOnBooksDeleted = await prisma.userOnBook.findMany({
+        where: { userId },
+      });
+
+      // Deletar na ordem correta
+      await prisma.userOnBook.deleteMany({ where: { userId } });
+      await prisma.book.deleteMany({ where: { id: { in: booksToDelete } } });
+      await prisma.category.deleteMany({ where: { userId } });
+      await prisma.userAchievement.deleteMany({ where: { userId } });
+      await prisma.friendship.deleteMany({
+        where: { OR: [{ friendId: userId }, { userId: userId }] },
+      });
+      await prisma.post.deleteMany({ where: { userId } });
+      await prisma.goal.deleteMany({ where: { userId } });
+      if (userStreakToDelete)
+        await prisma.userStreak.delete({ where: { userId } });
+      await prisma.userOnGroup.deleteMany({ where: { userId } }); // <--- Corrigido
+      await prisma.user.delete({ where: { id: userId } });
+
+      // Retornar instâncias deletadas
+      return {
+        user: userToDelete,
+        categories: categoriesToDelete,
+        achievements: achievementsToDelete,
+        friendships: friendshipsToDelete,
+        posts: postsToDelete,
+        goals: goalsToDelete,
+        streak: userStreakToDelete,
+        userOnGroups: userOnGroupsDeleted,
+        userOnBooks: userOnBooksDeleted,
+        books: booksDeleted,
+      };
     });
 
-    res.status(200).json({ message: "Usuario deletado com sucesso." });
+    res.status(200).json({
+      message: "Usuario deletado com sucesso.",
+      deletedRecords,
+    });
   } catch (error) {
     const err = error.message;
     console.log(err);
@@ -235,9 +318,35 @@ export const updateUserImage = async (req, res) => {
     if (!req.file)
       return res.status(400).json({ error: "Nenhuma imagem enviada" });
 
+    // Busca usuário atual para pegar imagem antiga
+    const currentUser = await db.user.findUnique({
+      where: { id: userId },
+      select: { profileImageUrl: true },
+    });
+
+    // Se existir imagem antiga, deleta do bucket
+    if (currentUser?.profileImageUrl) {
+      try {
+        // Extrai o caminho relativo no bucket a partir da URL
+        const oldPath =
+          currentUser.profileImageUrl.split("/profile-images/")[1];
+        if (oldPath) {
+          const { error: deleteError } = await supabase.storage
+            .from("profile-images")
+            .remove([oldPath]);
+          if (deleteError)
+            console.warn("Erro ao deletar imagem antiga:", deleteError.message);
+        }
+      } catch (e) {
+        console.warn("Erro ao tentar remover imagem antiga:", e.message);
+      }
+    }
+
+    // Monta novo nome com timestamp
     const fileExt = req.file.originalname.split(".").pop();
-    const fileName = `profiles/${userId}.jpg`;
-    const filePath = `profile-images/${fileName}`;
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const fileName = `profile-images/profiles/${userId}_${timestamp}.${fileExt}`;
+    const filePath = `${fileName}`;
 
     // Upload para o Supabase Storage
     const { error } = await supabase.storage

@@ -15,6 +15,7 @@ import categoryRouter from "./routes/categoryRoutes";
 import bookCategoryOnBookRouter from "./routes/bookCategoryOnBookRoutes";
 import achievementRouter from "./routes/achievementRoutes";
 import userStreakRouter from "./routes/userStreakRoutes";
+import path from "path";
 
 const app = express();
 
@@ -23,6 +24,8 @@ const port = process.env.PORT || 3333;
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "../public")));
 
 app.get("/", (req, res) => {
   res.json({ message: "Olá Mundo" }).status(200);

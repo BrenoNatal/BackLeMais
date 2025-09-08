@@ -118,9 +118,34 @@ export const updateGroupImage = async (req, res) => {
     if (!req.file)
       return res.status(400).json({ error: "Nenhuma imagem enviada" });
 
+    // Busca grupo atual para pegar imagem antiga
+    const currentGroup = await db.group.findUnique({
+      where: { id: groupId },
+      select: { groupImageUrl: true },
+    });
+
+    // Se existir imagem antiga, deleta do bucket
+    if (currentGroup?.groupImageUrl) {
+      try {
+        // Extrai o caminho relativo no bucket a partir da URL
+        const oldPath = currentGroup.groupImageUrl.split("/group-images/")[1];
+        if (oldPath) {
+          const { error: deleteError } = await supabase.storage
+            .from("group-images")
+            .remove([oldPath]);
+          if (deleteError)
+            console.warn("Erro ao deletar imagem antiga:", deleteError.message);
+        }
+      } catch (e) {
+        console.warn("Erro ao tentar remover imagem antiga:", e.message);
+      }
+    }
+
+    // Monta novo nome com timestamp
     const fileExt = req.file.originalname.split(".").pop();
-    const fileName = `groups/${groupId}.jpg`;
-    const filePath = `group-images/${fileName}`;
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const fileName = `group-images/groups/${groupId}_${timestamp}.${fileExt}`;
+    const filePath = `${fileName}`;
 
     // Upload para o Supabase Storage
     const { error } = await supabase.storage
