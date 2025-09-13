@@ -19,7 +19,7 @@ userRouter.post("/register", register);
 userRouter.get("/", getAllUsers);
 userRouter.get("/:id", getUserById);
 userRouter.get("/user/groups/:id", getUserGroups);
-userRouter.get("/user/:id", isAuthenticated, getUserByIdAuth);
+userRouter.get("/user/:id", getUserByIdAuth);
 userRouter.put("/user/:id", isAuthenticated, updateUser);
 userRouter.delete("/user/:id", isAuthenticated, deleteUser);
 userRouter.post(

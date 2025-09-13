@@ -3,6 +3,7 @@ import db from "../utils/db";
 import { findUserByEmail } from "./userController";
 import { compare } from "bcryptjs";
 import { sendVerificationEmail } from "../services/emailService";
+import { v4 as uuidv4 } from "uuid";
 
 export const login = async (req, res) => {
   try {
@@ -28,7 +29,15 @@ export const login = async (req, res) => {
     }
 
     if (!existingUser.isVerified) {
-      await sendVerificationEmail(existingUser.email, existingUser.verifyToken);
+      const verifyToken = uuidv4();
+      const userData = await db.user.update({
+        where: { id: existingUser.id },
+        data: {
+          verifyToken: verifyToken,
+        },
+      });
+
+      await sendVerificationEmail(existingUser.email, userData.verifyToken);
       return res
         .status(403)
         .json({ message: "Email não verificado. Cheque seu email." });
@@ -53,7 +62,7 @@ export const verifyEmail = async (req, res) => {
 
     if (!token) {
       return res.redirect(
-        "/email-verified.html?status=error&msg=Token inválido"
+        "/email-verified.html?status=error&msg=Token inválido. Tente fazer login novamente para receber um novo email de verificação."
       );
     }
 
@@ -63,20 +72,39 @@ export const verifyEmail = async (req, res) => {
 
     if (!user) {
       return res.redirect(
-        "/email-verified.html?status=error&msg=Token inválido ou expirado"
+        "/email-verified.html?status=error&msg=Token inválido ou expirado. Faça login no app para que um novo email de verificação seja enviado."
       );
+    }
+
+    if (user.isVerified) {
+      return res.redirect("/email-verified.html?status=already");
     }
 
     await db.user.update({
       where: { id: user.id },
       data: {
         isVerified: true,
-        verifyToken: null, // limpa o token
       },
     });
 
-    res.redirect("/email-verified.html?status=success");
+    // Sucesso
+    return res.redirect("/email-verified.html?status=success");
+  } catch (error: any) {
+    return res.redirect(
+      `/email-verified.html?status=error&msg=${encodeURIComponent(
+        error.message +
+          ". Tente fazer login novamente para receber um novo email de verificação."
+      )}`
+    );
+  }
+};
+
+export const verifyToken = async (req, res) => {
+  try {
+    const { token } = req.query;
+    res.status(200).json({ message: "Usuario autenticado", verified: true });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(400).json({ message: error.message, verified: false });
   }
 };

@@ -8,6 +8,15 @@ export const createGroup = async (req, res) => {
 
     const groupCreatorId = groupData.userId;
 
+    const existingGroup = await db.group.findUnique({
+      where: { name: groupData.name },
+    });
+
+    if (existingGroup) {
+      res.status(400);
+      throw new Error("Nome de grupo já utilizado.");
+    }
+
     const group = await db.group.create({
       data: {
         name: groupData.name,
@@ -62,7 +71,14 @@ export const getGroupById = async (req: Request, res: Response) => {
         users: {
           select: {
             type: true,
-            user: { select: { id: true, name: true, profileImageUrl: true } },
+            user: {
+              select: {
+                id: true,
+                name: true,
+                profileImageUrl: true,
+                username: true,
+              },
+            },
           },
         },
       },

@@ -309,7 +309,8 @@ exports.AchievementType = exports.$Enums.AchievementType = {
 exports.TypeMember = exports.$Enums.TypeMember = {
   CREATOR: 'CREATOR',
   ADMIN: 'ADMIN',
-  MEMBER: 'MEMBER'
+  MEMBER: 'MEMBER',
+  PENDING: 'PENDING'
 };
 
 exports.Prisma.ModelName = {

@@ -172,7 +172,7 @@ model UserStreak {
 
 model Group {
   id            String        @id @unique @default(uuid())
-  name          String
+  name          String        @unique
   description   String
   groupImageUrl String        @default("https://uxxggsabskosuakbqpji.supabase.co/storage/v1/object/public/group-images/group-images/groups/default.jpg")
   createdAt     DateTime      @default(now())
@@ -187,7 +187,7 @@ model UserOnGroup {
   groupId   String
   user      User       @relation(fields: [userId], references: [id])
   userId    String
-  type      TypeMember @default(MEMBER)
+  type      TypeMember @default(PENDING)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -229,6 +229,7 @@ enum TypeMember {
   CREATOR
   ADMIN
   MEMBER
+  PENDING
 }
 
 enum FriendshipStatus {

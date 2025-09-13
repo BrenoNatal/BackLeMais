@@ -13,6 +13,7 @@ import { updateGoalProgress } from "./goalController";
 import { supabase } from "../utils/supabase";
 import { sendVerificationEmail } from "../services/emailService";
 import { v4 as uuidv4 } from "uuid";
+import { group } from "console";
 
 export const updateUserGoals = async (
   userId: string,
@@ -36,6 +37,44 @@ export const updateUserGoals = async (
     ) {
       updateGoalProgress(progress, goal);
     }
+  });
+};
+
+export const updateUserGroupGoals = async (
+  userId: string,
+  bookCategories: BookCategoryOnBook[],
+  progress: number,
+  goalType: TypeGoal
+) => {
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: {
+      groups: {
+        include: {
+          group: { include: { goals: { include: { category: true } } } },
+        },
+        where: {
+          type: { not: "PENDING" },
+        },
+      },
+    },
+  });
+
+  console.log("Metas Grupos Usuario: ", user);
+
+  user.groups.forEach(async (group) => {
+    group.group.goals.forEach(async (goal) => {
+      const intersection = goal.category.filter((cat) =>
+        bookCategories.filter((bookCat) => bookCat.categoryId === cat.id)
+      );
+
+      if (
+        (intersection.length > 0 || goal.category.length == 0) &&
+        goal.type == goalType
+      ) {
+        updateGoalProgress(progress, goal);
+      }
+    });
   });
 };
 
@@ -124,6 +163,7 @@ export const getAllUsers = async (req, res) => {
     const allUsers = await db.user.findMany({
       where: {
         name: { contains: name, mode: "insensitive" },
+        isVerified: { equals: true },
       },
       select: {
         id: true,
@@ -165,13 +205,23 @@ export const getUserByIdAuth = async (req, res) => {
       where: {
         id: userId,
       },
-      include: {
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        username: true,
+        profileImageUrl: true,
         books: { include: { book: {} } },
         friends: {
           include: { friendOf: {} },
         },
+        friendOf: {
+          include: { user: {} },
+        },
       },
     });
+
+    console.log(user);
     res.status(200).json({ data: user });
   } catch (error) {
     const err = error.message;

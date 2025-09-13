@@ -119,7 +119,8 @@ export type TypeGoal = (typeof TypeGoal)[keyof typeof TypeGoal]
 export const TypeMember: {
   CREATOR: 'CREATOR',
   ADMIN: 'ADMIN',
-  MEMBER: 'MEMBER'
+  MEMBER: 'MEMBER',
+  PENDING: 'PENDING'
 };
 
 export type TypeMember = (typeof TypeMember)[keyof typeof TypeMember]
@@ -19576,10 +19577,10 @@ export namespace Prisma {
 
   export type GroupWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    name?: string
     AND?: GroupWhereInput | GroupWhereInput[]
     OR?: GroupWhereInput[]
     NOT?: GroupWhereInput | GroupWhereInput[]
-    name?: StringFilter<"Group"> | string
     description?: StringFilter<"Group"> | string
     groupImageUrl?: StringFilter<"Group"> | string
     createdAt?: DateTimeFilter<"Group"> | Date | string
@@ -19587,7 +19588,7 @@ export namespace Prisma {
     users?: UserOnGroupListRelationFilter
     posts?: PostListRelationFilter
     goals?: GoalListRelationFilter
-  }, "id" | "id">
+  }, "id" | "id" | "name">
 
   export type GroupOrderByWithAggregationInput = {
     id?: SortOrder

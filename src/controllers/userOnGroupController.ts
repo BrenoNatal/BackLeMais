@@ -9,7 +9,7 @@ export const createUserOnGroup = async (req: Request, res: Response) => {
       data: {
         userId: data.userId,
         groupId: data.groupId,
-        type: "MEMBER",
+        type: "PENDING",
       },
     });
 

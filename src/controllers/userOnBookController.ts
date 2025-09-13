@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import db from "../utils/db";
 import { calculateUserAchievementsService } from "./achievementController";
-import { updateUserGoals } from "./userController";
+import { updateUserGoals, updateUserGroupGoals } from "./userController";
 import { updateUserStreak } from "./userStreakController";
 
 // GET: Listagem e busca
@@ -145,12 +145,17 @@ export const updateUserOnBook = async (req: Request, res: Response) => {
 
     if (data.status == "COMPLETO") {
       updateUserGoals(userId, userOnBookPrev.bookCategories, 1, "BOOKS");
+      updateUserGroupGoals(userId, userOnBookPrev.bookCategories, 1, "BOOKS");
     } else {
       const progress = userOnBook.currentPage - userOnBookPrev.currentPage;
       updateUserGoals(userId, userOnBookPrev.bookCategories, progress, "PAGES");
+      updateUserGroupGoals(
+        userId,
+        userOnBookPrev.bookCategories,
+        progress,
+        "PAGES"
+      );
     }
-
-    // updateUserGoals userId: string, category, progress
 
     try {
       await calculateUserAchievementsService(userId);

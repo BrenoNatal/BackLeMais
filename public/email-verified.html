@@ -5,6 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Email Verificado</title>
     <style>
+      /* =====================
+       Variáveis base
+    ====================== */
+      :root {
+        --white: #f7eff6;
+        --grey: #dfdfdf;
+        --darkGrey: #6f6f6f;
+        --blue: #5b88a5;
+        --lightBlue: #e1e8ed;
+        --blue2: #cbd6dd;
+        --darkBlue: #243a69;
+
+        /* Dark */
+        --darkBackground: #1e2233;
+        --darkCard: #2b3145;
+        --darkSubtext: #8fa4b8;
+        --darkIcon: #a6b1c2;
+        --darkBorder: #3e4c68;
+        --streakCircleDark: #4f6b85;
+      }
+
+      /* =====================
+       Light mode (default)
+    ====================== */
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         display: flex;
@@ -12,53 +36,96 @@
         align-items: center;
         height: 100vh;
         margin: 0;
-        background: linear-gradient(135deg, #5b88a5, #243a69);
-        color: #f4f4f2;
+        background-color: var(--white);
+        color: var(--darkBlue);
       }
 
       .container {
         text-align: center;
-        background-color: rgba(25, 16, 19, 0.85);
+        background-color: var(--lightBlue);
         padding: 40px;
         border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        max-width: 400px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        max-width: 420px;
         width: 90%;
+        border: 1px solid var(--blue2);
       }
 
       h1 {
         font-size: 2rem;
         margin-bottom: 20px;
-        color: #d4cdc5;
+        color: var(--darkBlue);
       }
 
       p {
         font-size: 1rem;
-        margin-bottom: 30px;
+        margin: 0;
+        color: var(--blue);
       }
 
-      a {
-        display: inline-block;
-        text-decoration: none;
-        background-color: #5b88a5;
-        color: #f4f4f2;
-        padding: 12px 24px;
-        border-radius: 6px;
-        transition: background-color 0.3s ease;
+      .success h1 {
+        color: #4caf50;
       }
 
-      a:hover {
-        background-color: #243a69;
+      .already h1 {
+        color: #ffc107;
+      }
+
+      .error h1 {
+        color: #ff5252;
+      }
+
+      /* =====================
+       Dark mode override
+    ====================== */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: var(--darkBackground);
+          color: var(--white);
+        }
+
+        .container {
+          background-color: var(--darkCard);
+          border: 1px solid var(--darkBorder);
+        }
+
+        p {
+          color: var(--darkSubtext);
+        }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1>Email Verificado!</h1>
-      <p>
-        Seu endereço de email foi confirmado com sucesso. Agora você pode
-        acessar todas as funcionalidades.
-      </p>
+    <div class="container" id="message-box">
+      <h1>Carregando...</h1>
+      <p>Aguarde enquanto verificamos seu email.</p>
     </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get("status");
+      const msg = params.get("msg");
+
+      const box = document.getElementById("message-box");
+      const title = box.querySelector("h1");
+      const text = box.querySelector("p");
+
+      if (status === "success") {
+        box.classList.add("success");
+        title.textContent = "Email Verificado!";
+        text.textContent = "Seu endereço de email foi confirmado com sucesso.";
+      } else if (status === "already") {
+        box.classList.add("already");
+        title.textContent = "Email já verificado";
+        text.textContent =
+          "Esse email já foi confirmado anteriormente. Você já pode acessar o app.";
+      } else {
+        box.classList.add("error");
+        title.textContent = "Erro na Verificação";
+        text.textContent =
+          msg ||
+          "Ocorreu um problema ao verificar seu email. Faça login no app para que um novo email seja enviado.";
+      }
+    </script>
   </body>
 </html>

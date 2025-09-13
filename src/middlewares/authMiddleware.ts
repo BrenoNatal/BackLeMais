@@ -4,20 +4,31 @@ export const isAuthenticated = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    res.status(401);
-    throw new Error("Sem Autorização");
-  }
-  try {
-    const token = authorization.split(" ")[1];
-    const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-    req.payload = payload;
-  } catch (err) {
-    res.status(401);
-    if (err.name === "TokenExpiredError") {
-      throw new Error(err.name);
-    }
-    throw new Error("Sem Autorização");
+    return res
+      .status(401)
+      .json({ message: "Acesso negado: nenhum token fornecido." });
   }
 
-  return next();
+  const token = authorization.split(" ")[1];
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Acesso negado: token inválido ou ausente." });
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    req.payload = payload;
+    return next();
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({ message: "Sessão expirada. Faça login novamente." });
+    }
+    return res
+      .status(401)
+      .json({ message: "Token inválido. Autenticação necessária." });
+  }
 };
