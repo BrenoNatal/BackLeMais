@@ -6,7 +6,7 @@ const transporter = nodemailer.createTransport({
   port: 587, // use 465 se quiser SSL
   secure: false, // true se porta 465
   auth: {
-    user: process.env.GMAIL_USER, // seu e-mail Gmail
+    user: process.env.EMAIL_USER, // seu e-mail Gmail
     pass: process.env.EMAIL_PASS, // senha de app (recomendado) ou senha real
   },
 });
@@ -18,7 +18,7 @@ export const sendVerificationEmail = async (to: string, token: string) => {
 
   try {
     await transporter.sendMail({
-      from: `"LeMais 📚" <${process.env.GMAIL_USER}>`,
+      from: `"LeMais 📚" <${process.env.EMAIL_USER}>`,
       to,
       subject: "Confirme seu e-mail",
       html: `
@@ -48,7 +48,7 @@ export const sendResetEmail = async (to: string, token: string) => {
 
   try {
     await transporter.sendMail({
-      from: `"LeMais Suporte" <${process.env.GMAIL_USER}>`,
+      from: `"LeMais Suporte" <${process.env.EMAIL_USER}>`,
       to,
       subject: "Redefinição de Senha",
       html: `
