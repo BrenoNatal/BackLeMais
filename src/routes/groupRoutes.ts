@@ -3,6 +3,7 @@ import {
   deleteGroup,
   getAllGroups,
   getGroupById,
+  getGroupRanksById,
   updateGroup,
   updateGroupImage,
 } from "../controllers/groupController";
@@ -15,6 +16,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 groupRouter.post("/", createGroup);
 groupRouter.get("/", getAllGroups);
 groupRouter.get("/group/:id", getGroupById);
+groupRouter.get("/groupRanks/:id", getGroupRanksById);
 groupRouter.put("/group/:id", updateGroup);
 groupRouter.delete("/group/:id", deleteGroup);
 groupRouter.post(

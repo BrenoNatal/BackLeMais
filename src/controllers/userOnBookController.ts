@@ -11,6 +11,7 @@ export const getUserBooksIds = async (req: Request, res: Response) => {
     const userBooks = await db.userOnBook.findMany({
       where: { userId },
       select: { bookId: true },
+      orderBy: { createdAt: "desc" },
     });
     res.status(200).json({ data: userBooks.map((ub) => ub.bookId) });
   } catch (error) {

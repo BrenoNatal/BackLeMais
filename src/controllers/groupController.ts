@@ -71,6 +71,43 @@ export const getGroupById = async (req: Request, res: Response) => {
         users: {
           select: {
             type: true,
+            pointsAccumulatedBooks: true,
+            pointsAccumulatedPages: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                profileImageUrl: true,
+                username: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.status(200).json({ data: group });
+  } catch (error) {
+    const err = error.message;
+    console.log(err);
+    res.status(400).json({ message: err });
+  }
+};
+
+export const getGroupRanksById = async (req: Request, res: Response) => {
+  try {
+    const groupId = req.params.id;
+
+    const group = await db.group.findUnique({
+      where: {
+        id: groupId,
+      },
+      include: {
+        users: {
+          select: {
+            type: true,
+            pointsAccumulatedBooks: true,
+            pointsAccumulatedPages: true,
             user: {
               select: {
                 id: true,

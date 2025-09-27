@@ -129,6 +129,8 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   username: 'username',
   profileImageUrl: 'profileImageUrl',
+  resetToken: 'resetToken',
+  resetTokenExpires: 'resetTokenExpires',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -157,7 +159,9 @@ exports.Prisma.UserOnBookScalarFieldEnum = {
   userId: 'userId',
   status: 'status',
   currentPage: 'currentPage',
-  totalPages: 'totalPages'
+  totalPages: 'totalPages',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.NoteScalarFieldEnum = {
@@ -240,6 +244,8 @@ exports.Prisma.UserOnGroupScalarFieldEnum = {
   groupId: 'groupId',
   userId: 'userId',
   type: 'type',
+  pointsAccumulatedPages: 'pointsAccumulatedPages',
+  pointsAccumulatedBooks: 'pointsAccumulatedBooks',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

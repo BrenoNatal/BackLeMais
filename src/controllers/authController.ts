@@ -2,8 +2,11 @@ import { generateToken } from "../utils/jwt";
 import db from "../utils/db";
 import { findUserByEmail } from "./userController";
 import { compare } from "bcryptjs";
-import { sendVerificationEmail } from "../services/emailService";
-import { v4 as uuidv4 } from "uuid";
+import {
+  sendResetEmail,
+  sendVerificationEmail,
+} from "../services/emailService";
+import { hashSync } from "bcryptjs";
 
 export const login = async (req, res) => {
   try {
@@ -29,15 +32,7 @@ export const login = async (req, res) => {
     }
 
     if (!existingUser.isVerified) {
-      const verifyToken = uuidv4();
-      const userData = await db.user.update({
-        where: { id: existingUser.id },
-        data: {
-          verifyToken: verifyToken,
-        },
-      });
-
-      await sendVerificationEmail(existingUser.email, userData.verifyToken);
+      await sendVerificationEmail(existingUser.email, existingUser.verifyToken);
       return res
         .status(403)
         .json({ message: "Email não verificado. Cheque seu email." });
@@ -106,5 +101,59 @@ export const verifyToken = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: error.message, verified: false });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await db.user.findUnique({ where: { email } });
+
+    if (!user) {
+      throw new Error("Email invalido");
+    }
+
+    if (user) {
+      const token = crypto.randomUUID();
+      await db.user.update({
+        where: { id: user.id },
+        data: {
+          resetToken: token,
+          resetTokenExpires: new Date(Date.now() + 30 * 60 * 1000),
+        },
+      });
+      await sendResetEmail(email, token);
+    }
+    res.status(200).json({ message: "Email enviado" });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    console.log(token);
+    const user = await db.user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpires: { gt: new Date() },
+      },
+    });
+    if (!user)
+      return res.status(400).json({ message: "Token inválido ou expirado" });
+
+    const hash = hashSync(newPassword, 12);
+    await db.user.update({
+      where: { id: user.id },
+      data: { password: hash, resetToken: null, resetTokenExpires: null },
+    });
+
+    res.json({ message: "Senha redefinida com sucesso!" });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: error.message });
   }
 };

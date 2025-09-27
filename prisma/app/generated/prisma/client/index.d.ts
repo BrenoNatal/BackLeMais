@@ -2490,6 +2490,8 @@ export namespace Prisma {
     name: string | null
     username: string | null
     profileImageUrl: string | null
+    resetToken: string | null
+    resetTokenExpires: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2503,6 +2505,8 @@ export namespace Prisma {
     name: string | null
     username: string | null
     profileImageUrl: string | null
+    resetToken: string | null
+    resetTokenExpires: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2516,6 +2520,8 @@ export namespace Prisma {
     name: number
     username: number
     profileImageUrl: number
+    resetToken: number
+    resetTokenExpires: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2531,6 +2537,8 @@ export namespace Prisma {
     name?: true
     username?: true
     profileImageUrl?: true
+    resetToken?: true
+    resetTokenExpires?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2544,6 +2552,8 @@ export namespace Prisma {
     name?: true
     username?: true
     profileImageUrl?: true
+    resetToken?: true
+    resetTokenExpires?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2557,6 +2567,8 @@ export namespace Prisma {
     name?: true
     username?: true
     profileImageUrl?: true
+    resetToken?: true
+    resetTokenExpires?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2643,6 +2655,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl: string
+    resetToken: string | null
+    resetTokenExpires: Date | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -2673,6 +2687,8 @@ export namespace Prisma {
     name?: boolean
     username?: boolean
     profileImageUrl?: boolean
+    resetToken?: boolean
+    resetTokenExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     friendOf?: boolean | User$friendOfArgs<ExtArgs>
@@ -2697,6 +2713,8 @@ export namespace Prisma {
     name?: boolean
     username?: boolean
     profileImageUrl?: boolean
+    resetToken?: boolean
+    resetTokenExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -2710,6 +2728,8 @@ export namespace Prisma {
     name?: boolean
     username?: boolean
     profileImageUrl?: boolean
+    resetToken?: boolean
+    resetTokenExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -2723,11 +2743,13 @@ export namespace Prisma {
     name?: boolean
     username?: boolean
     profileImageUrl?: boolean
+    resetToken?: boolean
+    resetTokenExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "isVerified" | "verifyToken" | "password" | "name" | "username" | "profileImageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "isVerified" | "verifyToken" | "password" | "name" | "username" | "profileImageUrl" | "resetToken" | "resetTokenExpires" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     friendOf?: boolean | User$friendOfArgs<ExtArgs>
     friends?: boolean | User$friendsArgs<ExtArgs>
@@ -2767,6 +2789,8 @@ export namespace Prisma {
       name: string
       username: string
       profileImageUrl: string
+      resetToken: string | null
+      resetTokenExpires: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -3210,6 +3234,8 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly username: FieldRef<"User", 'String'>
     readonly profileImageUrl: FieldRef<"User", 'String'>
+    readonly resetToken: FieldRef<"User", 'String'>
+    readonly resetTokenExpires: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -6048,6 +6074,8 @@ export namespace Prisma {
     status: $Enums.BookStatus | null
     currentPage: number | null
     totalPages: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserOnBookMaxAggregateOutputType = {
@@ -6056,6 +6084,8 @@ export namespace Prisma {
     status: $Enums.BookStatus | null
     currentPage: number | null
     totalPages: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserOnBookCountAggregateOutputType = {
@@ -6064,6 +6094,8 @@ export namespace Prisma {
     status: number
     currentPage: number
     totalPages: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -6084,6 +6116,8 @@ export namespace Prisma {
     status?: true
     currentPage?: true
     totalPages?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type UserOnBookMaxAggregateInputType = {
@@ -6092,6 +6126,8 @@ export namespace Prisma {
     status?: true
     currentPage?: true
     totalPages?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type UserOnBookCountAggregateInputType = {
@@ -6100,6 +6136,8 @@ export namespace Prisma {
     status?: true
     currentPage?: true
     totalPages?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -6195,6 +6233,8 @@ export namespace Prisma {
     status: $Enums.BookStatus
     currentPage: number
     totalPages: number | null
+    createdAt: Date
+    updatedAt: Date
     _count: UserOnBookCountAggregateOutputType | null
     _avg: UserOnBookAvgAggregateOutputType | null
     _sum: UserOnBookSumAggregateOutputType | null
@@ -6222,6 +6262,8 @@ export namespace Prisma {
     status?: boolean
     currentPage?: boolean
     totalPages?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     book?: boolean | BookDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     notes?: boolean | UserOnBook$notesArgs<ExtArgs>
@@ -6235,6 +6277,8 @@ export namespace Prisma {
     status?: boolean
     currentPage?: boolean
     totalPages?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     book?: boolean | BookDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userOnBook"]>
@@ -6245,6 +6289,8 @@ export namespace Prisma {
     status?: boolean
     currentPage?: boolean
     totalPages?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     book?: boolean | BookDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userOnBook"]>
@@ -6255,9 +6301,11 @@ export namespace Prisma {
     status?: boolean
     currentPage?: boolean
     totalPages?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type UserOnBookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"bookId" | "userId" | "status" | "currentPage" | "totalPages", ExtArgs["result"]["userOnBook"]>
+  export type UserOnBookOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"bookId" | "userId" | "status" | "currentPage" | "totalPages" | "createdAt" | "updatedAt", ExtArgs["result"]["userOnBook"]>
   export type UserOnBookInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     book?: boolean | BookDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6288,6 +6336,8 @@ export namespace Prisma {
       status: $Enums.BookStatus
       currentPage: number
       totalPages: number | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["userOnBook"]>
     composites: {}
   }
@@ -6720,6 +6770,8 @@ export namespace Prisma {
     readonly status: FieldRef<"UserOnBook", 'BookStatus'>
     readonly currentPage: FieldRef<"UserOnBook", 'Int'>
     readonly totalPages: FieldRef<"UserOnBook", 'Int'>
+    readonly createdAt: FieldRef<"UserOnBook", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserOnBook", 'DateTime'>
   }
     
 
@@ -16230,14 +16282,28 @@ export namespace Prisma {
 
   export type AggregateUserOnGroup = {
     _count: UserOnGroupCountAggregateOutputType | null
+    _avg: UserOnGroupAvgAggregateOutputType | null
+    _sum: UserOnGroupSumAggregateOutputType | null
     _min: UserOnGroupMinAggregateOutputType | null
     _max: UserOnGroupMaxAggregateOutputType | null
+  }
+
+  export type UserOnGroupAvgAggregateOutputType = {
+    pointsAccumulatedPages: number | null
+    pointsAccumulatedBooks: number | null
+  }
+
+  export type UserOnGroupSumAggregateOutputType = {
+    pointsAccumulatedPages: number | null
+    pointsAccumulatedBooks: number | null
   }
 
   export type UserOnGroupMinAggregateOutputType = {
     groupId: string | null
     userId: string | null
     type: $Enums.TypeMember | null
+    pointsAccumulatedPages: number | null
+    pointsAccumulatedBooks: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -16246,6 +16312,8 @@ export namespace Prisma {
     groupId: string | null
     userId: string | null
     type: $Enums.TypeMember | null
+    pointsAccumulatedPages: number | null
+    pointsAccumulatedBooks: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -16254,16 +16322,30 @@ export namespace Prisma {
     groupId: number
     userId: number
     type: number
+    pointsAccumulatedPages: number
+    pointsAccumulatedBooks: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
 
+  export type UserOnGroupAvgAggregateInputType = {
+    pointsAccumulatedPages?: true
+    pointsAccumulatedBooks?: true
+  }
+
+  export type UserOnGroupSumAggregateInputType = {
+    pointsAccumulatedPages?: true
+    pointsAccumulatedBooks?: true
+  }
+
   export type UserOnGroupMinAggregateInputType = {
     groupId?: true
     userId?: true
     type?: true
+    pointsAccumulatedPages?: true
+    pointsAccumulatedBooks?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -16272,6 +16354,8 @@ export namespace Prisma {
     groupId?: true
     userId?: true
     type?: true
+    pointsAccumulatedPages?: true
+    pointsAccumulatedBooks?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -16280,6 +16364,8 @@ export namespace Prisma {
     groupId?: true
     userId?: true
     type?: true
+    pointsAccumulatedPages?: true
+    pointsAccumulatedBooks?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -16323,6 +16409,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserOnGroupAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserOnGroupSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserOnGroupMinAggregateInputType
@@ -16353,6 +16451,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserOnGroupCountAggregateInputType | true
+    _avg?: UserOnGroupAvgAggregateInputType
+    _sum?: UserOnGroupSumAggregateInputType
     _min?: UserOnGroupMinAggregateInputType
     _max?: UserOnGroupMaxAggregateInputType
   }
@@ -16361,9 +16461,13 @@ export namespace Prisma {
     groupId: string
     userId: string
     type: $Enums.TypeMember
+    pointsAccumulatedPages: number
+    pointsAccumulatedBooks: number
     createdAt: Date
     updatedAt: Date
     _count: UserOnGroupCountAggregateOutputType | null
+    _avg: UserOnGroupAvgAggregateOutputType | null
+    _sum: UserOnGroupSumAggregateOutputType | null
     _min: UserOnGroupMinAggregateOutputType | null
     _max: UserOnGroupMaxAggregateOutputType | null
   }
@@ -16386,6 +16490,8 @@ export namespace Prisma {
     groupId?: boolean
     userId?: boolean
     type?: boolean
+    pointsAccumulatedPages?: boolean
+    pointsAccumulatedBooks?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     group?: boolean | GroupDefaultArgs<ExtArgs>
@@ -16396,6 +16502,8 @@ export namespace Prisma {
     groupId?: boolean
     userId?: boolean
     type?: boolean
+    pointsAccumulatedPages?: boolean
+    pointsAccumulatedBooks?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     group?: boolean | GroupDefaultArgs<ExtArgs>
@@ -16406,6 +16514,8 @@ export namespace Prisma {
     groupId?: boolean
     userId?: boolean
     type?: boolean
+    pointsAccumulatedPages?: boolean
+    pointsAccumulatedBooks?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     group?: boolean | GroupDefaultArgs<ExtArgs>
@@ -16416,11 +16526,13 @@ export namespace Prisma {
     groupId?: boolean
     userId?: boolean
     type?: boolean
+    pointsAccumulatedPages?: boolean
+    pointsAccumulatedBooks?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOnGroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"groupId" | "userId" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["userOnGroup"]>
+  export type UserOnGroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"groupId" | "userId" | "type" | "pointsAccumulatedPages" | "pointsAccumulatedBooks" | "createdAt" | "updatedAt", ExtArgs["result"]["userOnGroup"]>
   export type UserOnGroupInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     group?: boolean | GroupDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -16444,6 +16556,8 @@ export namespace Prisma {
       groupId: string
       userId: string
       type: $Enums.TypeMember
+      pointsAccumulatedPages: number
+      pointsAccumulatedBooks: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["userOnGroup"]>
@@ -16874,6 +16988,8 @@ export namespace Prisma {
     readonly groupId: FieldRef<"UserOnGroup", 'String'>
     readonly userId: FieldRef<"UserOnGroup", 'String'>
     readonly type: FieldRef<"UserOnGroup", 'TypeMember'>
+    readonly pointsAccumulatedPages: FieldRef<"UserOnGroup", 'Int'>
+    readonly pointsAccumulatedBooks: FieldRef<"UserOnGroup", 'Int'>
     readonly createdAt: FieldRef<"UserOnGroup", 'DateTime'>
     readonly updatedAt: FieldRef<"UserOnGroup", 'DateTime'>
   }
@@ -18405,6 +18521,8 @@ export namespace Prisma {
     name: 'name',
     username: 'username',
     profileImageUrl: 'profileImageUrl',
+    resetToken: 'resetToken',
+    resetTokenExpires: 'resetTokenExpires',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -18442,7 +18560,9 @@ export namespace Prisma {
     userId: 'userId',
     status: 'status',
     currentPage: 'currentPage',
-    totalPages: 'totalPages'
+    totalPages: 'totalPages',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type UserOnBookScalarFieldEnum = (typeof UserOnBookScalarFieldEnum)[keyof typeof UserOnBookScalarFieldEnum]
@@ -18552,6 +18672,8 @@ export namespace Prisma {
     groupId: 'groupId',
     userId: 'userId',
     type: 'type',
+    pointsAccumulatedPages: 'pointsAccumulatedPages',
+    pointsAccumulatedBooks: 'pointsAccumulatedBooks',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -18777,6 +18899,8 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     username?: StringFilter<"User"> | string
     profileImageUrl?: StringFilter<"User"> | string
+    resetToken?: StringNullableFilter<"User"> | string | null
+    resetTokenExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     friendOf?: FriendshipListRelationFilter
@@ -18800,6 +18924,8 @@ export namespace Prisma {
     name?: SortOrder
     username?: SortOrder
     profileImageUrl?: SortOrder
+    resetToken?: SortOrderInput | SortOrder
+    resetTokenExpires?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     friendOf?: FriendshipOrderByRelationAggregateInput
@@ -18826,6 +18952,8 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     name?: StringFilter<"User"> | string
     profileImageUrl?: StringFilter<"User"> | string
+    resetToken?: StringNullableFilter<"User"> | string | null
+    resetTokenExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     friendOf?: FriendshipListRelationFilter
@@ -18849,6 +18977,8 @@ export namespace Prisma {
     name?: SortOrder
     username?: SortOrder
     profileImageUrl?: SortOrder
+    resetToken?: SortOrderInput | SortOrder
+    resetTokenExpires?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -18868,6 +18998,8 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     username?: StringWithAggregatesFilter<"User"> | string
     profileImageUrl?: StringWithAggregatesFilter<"User"> | string
+    resetToken?: StringNullableWithAggregatesFilter<"User"> | string | null
+    resetTokenExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -19010,6 +19142,8 @@ export namespace Prisma {
     status?: EnumBookStatusFilter<"UserOnBook"> | $Enums.BookStatus
     currentPage?: IntFilter<"UserOnBook"> | number
     totalPages?: IntNullableFilter<"UserOnBook"> | number | null
+    createdAt?: DateTimeFilter<"UserOnBook"> | Date | string
+    updatedAt?: DateTimeFilter<"UserOnBook"> | Date | string
     book?: XOR<BookScalarRelationFilter, BookWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     notes?: NoteListRelationFilter
@@ -19022,6 +19156,8 @@ export namespace Prisma {
     status?: SortOrder
     currentPage?: SortOrder
     totalPages?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     book?: BookOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     notes?: NoteOrderByRelationAggregateInput
@@ -19038,6 +19174,8 @@ export namespace Prisma {
     status?: EnumBookStatusFilter<"UserOnBook"> | $Enums.BookStatus
     currentPage?: IntFilter<"UserOnBook"> | number
     totalPages?: IntNullableFilter<"UserOnBook"> | number | null
+    createdAt?: DateTimeFilter<"UserOnBook"> | Date | string
+    updatedAt?: DateTimeFilter<"UserOnBook"> | Date | string
     book?: XOR<BookScalarRelationFilter, BookWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     notes?: NoteListRelationFilter
@@ -19050,6 +19188,8 @@ export namespace Prisma {
     status?: SortOrder
     currentPage?: SortOrder
     totalPages?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: UserOnBookCountOrderByAggregateInput
     _avg?: UserOnBookAvgOrderByAggregateInput
     _max?: UserOnBookMaxOrderByAggregateInput
@@ -19066,6 +19206,8 @@ export namespace Prisma {
     status?: EnumBookStatusWithAggregatesFilter<"UserOnBook"> | $Enums.BookStatus
     currentPage?: IntWithAggregatesFilter<"UserOnBook"> | number
     totalPages?: IntNullableWithAggregatesFilter<"UserOnBook"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"UserOnBook"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserOnBook"> | Date | string
   }
 
   export type NoteWhereInput = {
@@ -19621,6 +19763,8 @@ export namespace Prisma {
     groupId?: StringFilter<"UserOnGroup"> | string
     userId?: StringFilter<"UserOnGroup"> | string
     type?: EnumTypeMemberFilter<"UserOnGroup"> | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFilter<"UserOnGroup"> | number
+    pointsAccumulatedBooks?: IntFilter<"UserOnGroup"> | number
     createdAt?: DateTimeFilter<"UserOnGroup"> | Date | string
     updatedAt?: DateTimeFilter<"UserOnGroup"> | Date | string
     group?: XOR<GroupScalarRelationFilter, GroupWhereInput>
@@ -19631,6 +19775,8 @@ export namespace Prisma {
     groupId?: SortOrder
     userId?: SortOrder
     type?: SortOrder
+    pointsAccumulatedPages?: SortOrder
+    pointsAccumulatedBooks?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     group?: GroupOrderByWithRelationInput
@@ -19645,6 +19791,8 @@ export namespace Prisma {
     groupId?: StringFilter<"UserOnGroup"> | string
     userId?: StringFilter<"UserOnGroup"> | string
     type?: EnumTypeMemberFilter<"UserOnGroup"> | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFilter<"UserOnGroup"> | number
+    pointsAccumulatedBooks?: IntFilter<"UserOnGroup"> | number
     createdAt?: DateTimeFilter<"UserOnGroup"> | Date | string
     updatedAt?: DateTimeFilter<"UserOnGroup"> | Date | string
     group?: XOR<GroupScalarRelationFilter, GroupWhereInput>
@@ -19655,11 +19803,15 @@ export namespace Prisma {
     groupId?: SortOrder
     userId?: SortOrder
     type?: SortOrder
+    pointsAccumulatedPages?: SortOrder
+    pointsAccumulatedBooks?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserOnGroupCountOrderByAggregateInput
+    _avg?: UserOnGroupAvgOrderByAggregateInput
     _max?: UserOnGroupMaxOrderByAggregateInput
     _min?: UserOnGroupMinOrderByAggregateInput
+    _sum?: UserOnGroupSumOrderByAggregateInput
   }
 
   export type UserOnGroupScalarWhereWithAggregatesInput = {
@@ -19669,6 +19821,8 @@ export namespace Prisma {
     groupId?: StringWithAggregatesFilter<"UserOnGroup"> | string
     userId?: StringWithAggregatesFilter<"UserOnGroup"> | string
     type?: EnumTypeMemberWithAggregatesFilter<"UserOnGroup"> | $Enums.TypeMember
+    pointsAccumulatedPages?: IntWithAggregatesFilter<"UserOnGroup"> | number
+    pointsAccumulatedBooks?: IntWithAggregatesFilter<"UserOnGroup"> | number
     createdAt?: DateTimeWithAggregatesFilter<"UserOnGroup"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"UserOnGroup"> | Date | string
   }
@@ -19750,6 +19904,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -19773,6 +19929,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -19796,6 +19954,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -19819,6 +19979,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -19842,6 +20004,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19855,6 +20019,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19868,6 +20034,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20011,6 +20179,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     book: BookCreateNestedOneWithoutUsersInput
     user: UserCreateNestedOneWithoutBooksInput
     notes?: NoteCreateNestedManyWithoutUserOnBookInput
@@ -20023,6 +20193,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     notes?: NoteUncheckedCreateNestedManyWithoutUserOnBookInput
     bookCategories?: BookCategoryOnBookUncheckedCreateNestedManyWithoutUserOnBookInput
   }
@@ -20031,6 +20203,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     book?: BookUpdateOneRequiredWithoutUsersNestedInput
     user?: UserUpdateOneRequiredWithoutBooksNestedInput
     notes?: NoteUpdateManyWithoutUserOnBookNestedInput
@@ -20043,6 +20217,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NoteUncheckedUpdateManyWithoutUserOnBookNestedInput
     bookCategories?: BookCategoryOnBookUncheckedUpdateManyWithoutUserOnBookNestedInput
   }
@@ -20053,12 +20229,16 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserOnBookUpdateManyMutationInput = {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserOnBookUncheckedUpdateManyInput = {
@@ -20067,6 +20247,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NoteCreateInput = {
@@ -20619,6 +20801,8 @@ export namespace Prisma {
 
   export type UserOnGroupCreateInput = {
     type?: $Enums.TypeMember
+    pointsAccumulatedPages?: number
+    pointsAccumulatedBooks?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     group: GroupCreateNestedOneWithoutUsersInput
@@ -20629,12 +20813,16 @@ export namespace Prisma {
     groupId: string
     userId: string
     type?: $Enums.TypeMember
+    pointsAccumulatedPages?: number
+    pointsAccumulatedBooks?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type UserOnGroupUpdateInput = {
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     group?: GroupUpdateOneRequiredWithoutUsersNestedInput
@@ -20645,6 +20833,8 @@ export namespace Prisma {
     groupId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20653,12 +20843,16 @@ export namespace Prisma {
     groupId: string
     userId: string
     type?: $Enums.TypeMember
+    pointsAccumulatedPages?: number
+    pointsAccumulatedBooks?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type UserOnGroupUpdateManyMutationInput = {
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20667,6 +20861,8 @@ export namespace Prisma {
     groupId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20772,6 +20968,17 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -20884,6 +21091,8 @@ export namespace Prisma {
     name?: SortOrder
     username?: SortOrder
     profileImageUrl?: SortOrder
+    resetToken?: SortOrder
+    resetTokenExpires?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20897,6 +21106,8 @@ export namespace Prisma {
     name?: SortOrder
     username?: SortOrder
     profileImageUrl?: SortOrder
+    resetToken?: SortOrder
+    resetTokenExpires?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20910,6 +21121,8 @@ export namespace Prisma {
     name?: SortOrder
     username?: SortOrder
     profileImageUrl?: SortOrder
+    resetToken?: SortOrder
+    resetTokenExpires?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20956,6 +21169,20 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -21115,6 +21342,8 @@ export namespace Prisma {
     status?: SortOrder
     currentPage?: SortOrder
     totalPages?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserOnBookAvgOrderByAggregateInput = {
@@ -21128,6 +21357,8 @@ export namespace Prisma {
     status?: SortOrder
     currentPage?: SortOrder
     totalPages?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserOnBookMinOrderByAggregateInput = {
@@ -21136,6 +21367,8 @@ export namespace Prisma {
     status?: SortOrder
     currentPage?: SortOrder
     totalPages?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserOnBookSumOrderByAggregateInput = {
@@ -21458,17 +21691,6 @@ export namespace Prisma {
     _max?: NestedEnumAchievementTypeFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type AchievementScalarRelationFilter = {
     is?: AchievementWhereInput
     isNot?: AchievementWhereInput
@@ -21509,20 +21731,6 @@ export namespace Prisma {
 
   export type UserAchievementSumOrderByAggregateInput = {
     progress?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type UserStreakCountOrderByAggregateInput = {
@@ -21618,14 +21826,23 @@ export namespace Prisma {
     groupId?: SortOrder
     userId?: SortOrder
     type?: SortOrder
+    pointsAccumulatedPages?: SortOrder
+    pointsAccumulatedBooks?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type UserOnGroupAvgOrderByAggregateInput = {
+    pointsAccumulatedPages?: SortOrder
+    pointsAccumulatedBooks?: SortOrder
   }
 
   export type UserOnGroupMaxOrderByAggregateInput = {
     groupId?: SortOrder
     userId?: SortOrder
     type?: SortOrder
+    pointsAccumulatedPages?: SortOrder
+    pointsAccumulatedBooks?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -21634,8 +21851,15 @@ export namespace Prisma {
     groupId?: SortOrder
     userId?: SortOrder
     type?: SortOrder
+    pointsAccumulatedPages?: SortOrder
+    pointsAccumulatedBooks?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type UserOnGroupSumOrderByAggregateInput = {
+    pointsAccumulatedPages?: SortOrder
+    pointsAccumulatedBooks?: SortOrder
   }
 
   export type EnumTypeMemberWithAggregatesFilter<$PrismaModel = never> = {
@@ -21826,6 +22050,10 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -22674,10 +22902,6 @@ export namespace Prisma {
     connect?: AchievementWhereUniqueInput
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
   export type UserUpdateOneRequiredWithoutAchievementsNestedInput = {
     create?: XOR<UserCreateWithoutAchievementsInput, UserUncheckedCreateWithoutAchievementsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAchievementsInput
@@ -22927,6 +23151,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -23000,6 +23235,20 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -23172,31 +23421,6 @@ export namespace Prisma {
     _max?: NestedEnumAchievementTypeFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type NestedEnumTypeMemberFilter<$PrismaModel = never> = {
     equals?: $Enums.TypeMember | EnumTypeMemberFieldRefInput<$PrismaModel>
     in?: $Enums.TypeMember[] | ListEnumTypeMemberFieldRefInput<$PrismaModel>
@@ -23256,6 +23480,8 @@ export namespace Prisma {
 
   export type UserOnGroupCreateWithoutUserInput = {
     type?: $Enums.TypeMember
+    pointsAccumulatedPages?: number
+    pointsAccumulatedBooks?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     group: GroupCreateNestedOneWithoutUsersInput
@@ -23264,6 +23490,8 @@ export namespace Prisma {
   export type UserOnGroupUncheckedCreateWithoutUserInput = {
     groupId: string
     type?: $Enums.TypeMember
+    pointsAccumulatedPages?: number
+    pointsAccumulatedBooks?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23282,6 +23510,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     book: BookCreateNestedOneWithoutUsersInput
     notes?: NoteCreateNestedManyWithoutUserOnBookInput
     bookCategories?: BookCategoryOnBookCreateNestedManyWithoutUserOnBookInput
@@ -23292,6 +23522,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     notes?: NoteUncheckedCreateNestedManyWithoutUserOnBookInput
     bookCategories?: BookCategoryOnBookUncheckedCreateNestedManyWithoutUserOnBookInput
   }
@@ -23540,6 +23772,8 @@ export namespace Prisma {
     groupId?: StringFilter<"UserOnGroup"> | string
     userId?: StringFilter<"UserOnGroup"> | string
     type?: EnumTypeMemberFilter<"UserOnGroup"> | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFilter<"UserOnGroup"> | number
+    pointsAccumulatedBooks?: IntFilter<"UserOnGroup"> | number
     createdAt?: DateTimeFilter<"UserOnGroup"> | Date | string
     updatedAt?: DateTimeFilter<"UserOnGroup"> | Date | string
   }
@@ -23569,6 +23803,8 @@ export namespace Prisma {
     status?: EnumBookStatusFilter<"UserOnBook"> | $Enums.BookStatus
     currentPage?: IntFilter<"UserOnBook"> | number
     totalPages?: IntNullableFilter<"UserOnBook"> | number | null
+    createdAt?: DateTimeFilter<"UserOnBook"> | Date | string
+    updatedAt?: DateTimeFilter<"UserOnBook"> | Date | string
   }
 
   export type GoalUpsertWithWhereUniqueWithoutUserInput = {
@@ -23755,6 +23991,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friends?: FriendshipCreateNestedManyWithoutUserInput
@@ -23777,6 +24015,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friends?: FriendshipUncheckedCreateNestedManyWithoutUserInput
@@ -23804,6 +24044,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -23826,6 +24068,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -23864,6 +24108,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friends?: FriendshipUpdateManyWithoutUserNestedInput
@@ -23886,6 +24132,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friends?: FriendshipUncheckedUpdateManyWithoutUserNestedInput
@@ -23919,6 +24167,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -23941,6 +24191,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -23958,6 +24210,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutBooksInput
     notes?: NoteCreateNestedManyWithoutUserOnBookInput
     bookCategories?: BookCategoryOnBookCreateNestedManyWithoutUserOnBookInput
@@ -23968,6 +24222,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     notes?: NoteUncheckedCreateNestedManyWithoutUserOnBookInput
     bookCategories?: BookCategoryOnBookUncheckedCreateNestedManyWithoutUserOnBookInput
   }
@@ -24038,6 +24294,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -24060,6 +24318,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -24179,6 +24439,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -24201,6 +24463,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -24264,6 +24528,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -24286,6 +24552,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -24308,6 +24576,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     book: BookCreateNestedOneWithoutUsersInput
     user: UserCreateNestedOneWithoutBooksInput
     bookCategories?: BookCategoryOnBookCreateNestedManyWithoutUserOnBookInput
@@ -24319,6 +24589,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     bookCategories?: BookCategoryOnBookUncheckedCreateNestedManyWithoutUserOnBookInput
   }
 
@@ -24370,6 +24642,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -24392,6 +24666,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -24420,6 +24696,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     book?: BookUpdateOneRequiredWithoutUsersNestedInput
     user?: UserUpdateOneRequiredWithoutBooksNestedInput
     bookCategories?: BookCategoryOnBookUpdateManyWithoutUserOnBookNestedInput
@@ -24431,6 +24709,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bookCategories?: BookCategoryOnBookUncheckedUpdateManyWithoutUserOnBookNestedInput
   }
 
@@ -24490,6 +24770,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     book: BookCreateNestedOneWithoutUsersInput
     user: UserCreateNestedOneWithoutBooksInput
     notes?: NoteCreateNestedManyWithoutUserOnBookInput
@@ -24501,6 +24783,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     notes?: NoteUncheckedCreateNestedManyWithoutUserOnBookInput
   }
 
@@ -24553,6 +24837,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     book?: BookUpdateOneRequiredWithoutUsersNestedInput
     user?: UserUpdateOneRequiredWithoutBooksNestedInput
     notes?: NoteUpdateManyWithoutUserOnBookNestedInput
@@ -24564,6 +24850,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NoteUncheckedUpdateManyWithoutUserOnBookNestedInput
   }
 
@@ -24576,6 +24864,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -24598,6 +24888,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -24715,6 +25007,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -24737,6 +25031,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -24830,6 +25126,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -24852,6 +25150,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -24933,6 +25233,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -24955,6 +25257,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -25050,6 +25354,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -25072,6 +25378,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -25137,6 +25445,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -25159,6 +25469,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -25214,6 +25526,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -25236,6 +25550,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -25274,6 +25590,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -25296,6 +25614,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -25311,6 +25631,8 @@ export namespace Prisma {
 
   export type UserOnGroupCreateWithoutGroupInput = {
     type?: $Enums.TypeMember
+    pointsAccumulatedPages?: number
+    pointsAccumulatedBooks?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutGroupsInput
@@ -25319,6 +25641,8 @@ export namespace Prisma {
   export type UserOnGroupUncheckedCreateWithoutGroupInput = {
     userId: string
     type?: $Enums.TypeMember
+    pointsAccumulatedPages?: number
+    pointsAccumulatedBooks?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -25483,6 +25807,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -25505,6 +25831,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -25576,6 +25904,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -25598,6 +25928,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -25647,6 +25979,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipCreateNestedManyWithoutFriendOfInput
@@ -25669,6 +26003,8 @@ export namespace Prisma {
     name: string
     username: string
     profileImageUrl?: string
+    resetToken?: string | null
+    resetTokenExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     friendOf?: FriendshipUncheckedCreateNestedManyWithoutFriendOfInput
@@ -25740,6 +26076,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUpdateManyWithoutFriendOfNestedInput
@@ -25762,6 +26100,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     profileImageUrl?: StringFieldUpdateOperationsInput | string
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     friendOf?: FriendshipUncheckedUpdateManyWithoutFriendOfNestedInput
@@ -25788,6 +26128,8 @@ export namespace Prisma {
   export type UserOnGroupCreateManyUserInput = {
     groupId: string
     type?: $Enums.TypeMember
+    pointsAccumulatedPages?: number
+    pointsAccumulatedBooks?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -25797,6 +26139,8 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type GoalCreateManyUserInput = {
@@ -25875,6 +26219,8 @@ export namespace Prisma {
 
   export type UserOnGroupUpdateWithoutUserInput = {
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     group?: GroupUpdateOneRequiredWithoutUsersNestedInput
@@ -25883,6 +26229,8 @@ export namespace Prisma {
   export type UserOnGroupUncheckedUpdateWithoutUserInput = {
     groupId?: StringFieldUpdateOperationsInput | string
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25890,6 +26238,8 @@ export namespace Prisma {
   export type UserOnGroupUncheckedUpdateManyWithoutUserInput = {
     groupId?: StringFieldUpdateOperationsInput | string
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25898,6 +26248,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     book?: BookUpdateOneRequiredWithoutUsersNestedInput
     notes?: NoteUpdateManyWithoutUserOnBookNestedInput
     bookCategories?: BookCategoryOnBookUpdateManyWithoutUserOnBookNestedInput
@@ -25908,6 +26260,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NoteUncheckedUpdateManyWithoutUserOnBookNestedInput
     bookCategories?: BookCategoryOnBookUncheckedUpdateManyWithoutUserOnBookNestedInput
   }
@@ -25917,6 +26271,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type GoalUpdateWithoutUserInput = {
@@ -26063,12 +26419,16 @@ export namespace Prisma {
     status?: $Enums.BookStatus
     currentPage?: number
     totalPages?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserOnBookUpdateWithoutBookInput = {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutBooksNestedInput
     notes?: NoteUpdateManyWithoutUserOnBookNestedInput
     bookCategories?: BookCategoryOnBookUpdateManyWithoutUserOnBookNestedInput
@@ -26079,6 +26439,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NoteUncheckedUpdateManyWithoutUserOnBookNestedInput
     bookCategories?: BookCategoryOnBookUncheckedUpdateManyWithoutUserOnBookNestedInput
   }
@@ -26088,6 +26450,8 @@ export namespace Prisma {
     status?: EnumBookStatusFieldUpdateOperationsInput | $Enums.BookStatus
     currentPage?: IntFieldUpdateOperationsInput | number
     totalPages?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NoteCreateManyUserOnBookInput = {
@@ -26290,6 +26654,8 @@ export namespace Prisma {
   export type UserOnGroupCreateManyGroupInput = {
     userId: string
     type?: $Enums.TypeMember
+    pointsAccumulatedPages?: number
+    pointsAccumulatedBooks?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -26318,6 +26684,8 @@ export namespace Prisma {
 
   export type UserOnGroupUpdateWithoutGroupInput = {
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutGroupsNestedInput
@@ -26326,6 +26694,8 @@ export namespace Prisma {
   export type UserOnGroupUncheckedUpdateWithoutGroupInput = {
     userId?: StringFieldUpdateOperationsInput | string
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26333,6 +26703,8 @@ export namespace Prisma {
   export type UserOnGroupUncheckedUpdateManyWithoutGroupInput = {
     userId?: StringFieldUpdateOperationsInput | string
     type?: EnumTypeMemberFieldUpdateOperationsInput | $Enums.TypeMember
+    pointsAccumulatedPages?: IntFieldUpdateOperationsInput | number
+    pointsAccumulatedBooks?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

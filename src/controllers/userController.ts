@@ -63,6 +63,14 @@ export const updateUserGroupGoals = async (
   console.log("Metas Grupos Usuario: ", user);
 
   user.groups.forEach(async (group) => {
+    const userOnGroup = await db.userOnGroup.findUnique({
+      where: {
+        groupId_userId: {
+          groupId: group.groupId,
+          userId: userId,
+        },
+      },
+    });
     group.group.goals.forEach(async (goal) => {
       const intersection = goal.category.filter((cat) =>
         bookCategories.filter((bookCat) => bookCat.categoryId === cat.id)
@@ -73,6 +81,38 @@ export const updateUserGroupGoals = async (
         goal.type == goalType
       ) {
         updateGoalProgress(progress, goal);
+        switch (goal.type) {
+          case "BOOKS":
+            await db.userOnGroup.update({
+              where: {
+                groupId_userId: {
+                  groupId: userOnGroup.groupId,
+                  userId: userOnGroup.userId,
+                },
+              },
+              data: {
+                pointsAccumulatedBooks:
+                  userOnGroup.pointsAccumulatedBooks + progress,
+              },
+            });
+            break;
+          case "PAGES":
+            await db.userOnGroup.update({
+              where: {
+                groupId_userId: {
+                  groupId: userOnGroup.groupId,
+                  userId: userOnGroup.userId,
+                },
+              },
+              data: {
+                pointsAccumulatedPages:
+                  userOnGroup.pointsAccumulatedPages + progress,
+              },
+            });
+            break;
+          default:
+            break;
+        }
       }
     });
   });
@@ -211,17 +251,28 @@ export const getUserByIdAuth = async (req, res) => {
         name: true,
         username: true,
         profileImageUrl: true,
-        books: { include: { book: {} } },
+        books: {
+          where: { status: { equals: "LENDO" } },
+          include: { book: {} },
+          orderBy: { updatedAt: "desc" },
+        },
         friends: {
           include: { friendOf: {} },
         },
         friendOf: {
           include: { user: {} },
         },
+        achievements: {
+          where: { unlocked: true },
+          include: {
+            achievement: true,
+          },
+        },
       },
     });
 
-    console.log(user);
+    console.log("User Achievements: ", user.achievements);
+
     res.status(200).json({ data: user });
   } catch (error) {
     const err = error.message;
