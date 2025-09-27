@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 
 export const sendVerificationEmail = async (to: string, token: string) => {
+  console.log("Tentando enviar email");
   const transporter = nodemailer.createTransport({
     service: "gmail", // ou SMTP da sua escolha
     auth: {
@@ -8,14 +9,16 @@ export const sendVerificationEmail = async (to: string, token: string) => {
       pass: process.env.EMAIL_PASS,
     },
   });
+  console.log("transporter criadao");
 
   const verificationUrl = `${process.env.APP_URL}/auth/verify-email?token=${token}`;
 
-  await transporter.sendMail({
-    from: `"LeMais" <${process.env.EMAIL_USER}>`,
-    to,
-    subject: "Confirme seu e-mail",
-    html: `
+  try {
+    await transporter.sendMail({
+      from: `"LeMais" <${process.env.EMAIL_USER}>`,
+      to,
+      subject: "Confirme seu e-mail",
+      html: `
       <h1>Bem-vindo ao LeMais 📚</h1>
       <p>Clique no botão abaixo para confirmar seu e-mail:</p>
       <a href="${verificationUrl}" style="
@@ -29,7 +32,10 @@ export const sendVerificationEmail = async (to: string, token: string) => {
         Confirmar E-mail
       </a>
     `,
-  });
+    });
+  } catch (error) {
+    console.log("Erro no sendMail", error);
+  }
 };
 
 export const sendResetEmail = async (to: string, token: string) => {
