@@ -13,7 +13,6 @@ import { updateGoalProgress } from "./goalController";
 import { supabase } from "../utils/supabase";
 import { sendVerificationEmail } from "../services/emailService";
 import { v4 as uuidv4 } from "uuid";
-import { group } from "console";
 
 export const updateUserGoals = async (
   userId: string,
