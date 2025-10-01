@@ -13,6 +13,7 @@ import { updateGoalProgress } from "./goalController";
 import { supabase } from "../utils/supabase";
 import { sendVerificationEmail } from "../services/emailService";
 import { v4 as uuidv4 } from "uuid";
+import { group } from "console";
 
 export const updateUserGoals = async (
   userId: string,
@@ -135,37 +136,55 @@ export const findUserById = (userId) => {
 
 export const register = async (req, res) => {
   try {
-    const userData = req.body;
-    if (!userData.email?.trim() || !userData.password?.trim()) {
-      res.status(400);
-      throw new Error("Precisa de email e senha.");
+    const { email, password, username, name } = req.body;
+
+    if (
+      !email?.trim() ||
+      !password?.trim() ||
+      !username?.trim() ||
+      !name?.trim()
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Precisa de email, senha, nome e username." });
     }
 
-    userData.password = hashSync(userData.password, 12);
-    userData.verifyToken = uuidv4();
+    const redirectUrl = `${process.env.APP_URL}/auth/verify-email`;
 
-    const existingUser = await db.user.findUnique({
-      where: { email: userData.email },
+    // 1. Cria usuário no Supabase
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+      },
     });
 
-    if (existingUser) {
-      res.status(400);
-      throw new Error("Email já cadastrado.");
+    if (authError) {
+      console.error("Erro Supabase:", authError.message);
+      return res.status(400).json({ message: authError.message });
     }
 
-    const existingusername = await db.user.findUnique({
-      where: { username: userData.username },
-    });
-
-    if (existingusername) {
-      res.status(400);
-      throw new Error("Username em uso, escolha outro.");
+    const supabaseUser = authData.user;
+    if (!supabaseUser) {
+      return res
+        .status(400)
+        .json({ message: "Erro ao criar usuário no Supabase." });
     }
 
+    // 2. Salva dados complementares no Prisma
     const user = await db.user.create({
-      data: userData,
+      data: {
+        id: supabaseUser.id, // mantém o mesmo UUID do Supabase
+        email,
+        name,
+        username,
+        password: "managed-by-supabase", // campo apenas para compatibilidade
+        isVerified: false, // será true no webhook ou login
+      },
     });
 
+    // 3. Cria categorias padrão
     await db.category.createMany({
       data: [
         { name: "Sem categoria", userId: user.id, type: "NOTE" },
@@ -173,25 +192,20 @@ export const register = async (req, res) => {
       ],
     });
 
+    // 4. Inicializa conquistas
     try {
       await seedAchievementsService();
       await calculateUserAchievementsService(user.id);
-    } catch (achievementError: any) {
-      console.log("Erro ao inicializar conquistas:", achievementError.message);
+    } catch (err: any) {
+      console.log("Erro ao inicializar conquistas:", err.message);
     }
 
-    const token = generateToken(user);
-
-    // envia email de confirmação
-    await sendVerificationEmail(user.email, user.verifyToken);
-
-    res.status(200).json({
-      message: "Usuário registrado. Verifique seu email para ativar a conta.",
+    return res.status(200).json({
+      message: "Usuário registrado. Verifique seu e-mail para ativar a conta.",
     });
-  } catch (error) {
-    const err = error.message;
-    console.log(err);
-    res.status(400).json({ message: err });
+  } catch (error: any) {
+    console.error("Erro no registro:", error.message);
+    return res.status(400).json({ message: error.message });
   }
 };
 

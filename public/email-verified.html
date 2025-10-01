@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Email Verificado</title>
     <style>
-      /* =====================
-       Variáveis base
-    ====================== */
       :root {
         --white: #f7eff6;
         --grey: #dfdfdf;
@@ -16,19 +13,12 @@
         --lightBlue: #e1e8ed;
         --blue2: #cbd6dd;
         --darkBlue: #243a69;
-
-        /* Dark */
         --darkBackground: #1e2233;
         --darkCard: #2b3145;
         --darkSubtext: #8fa4b8;
-        --darkIcon: #a6b1c2;
         --darkBorder: #3e4c68;
-        --streakCircleDark: #4f6b85;
       }
 
-      /* =====================
-       Light mode (default)
-    ====================== */
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         display: flex;
@@ -56,7 +46,6 @@
         margin-bottom: 20px;
         color: var(--darkBlue);
       }
-
       p {
         font-size: 1rem;
         margin: 0;
@@ -66,29 +55,19 @@
       .success h1 {
         color: #4caf50;
       }
-
-      .already h1 {
-        color: #ffc107;
-      }
-
       .error h1 {
         color: #ff5252;
       }
 
-      /* =====================
-       Dark mode override
-    ====================== */
       @media (prefers-color-scheme: dark) {
         body {
           background-color: var(--darkBackground);
           color: var(--white);
         }
-
         .container {
           background-color: var(--darkCard);
           border: 1px solid var(--darkBorder);
         }
-
         p {
           color: var(--darkSubtext);
         }
@@ -102,29 +81,22 @@
     </div>
 
     <script>
-      const params = new URLSearchParams(window.location.search);
-      const status = params.get("status");
-      const msg = params.get("msg");
-
+      const params = new URLSearchParams(window.location.hash.substring(1));
+      const type = params.get("type"); // Supabase envia type=signup_confirmation ou type=recovery
       const box = document.getElementById("message-box");
       const title = box.querySelector("h1");
       const text = box.querySelector("p");
 
-      if (status === "success") {
+      if (type === "success") {
         box.classList.add("success");
         title.textContent = "Email Verificado!";
-        text.textContent = "Seu endereço de email foi confirmado com sucesso.";
-      } else if (status === "already") {
-        box.classList.add("already");
-        title.textContent = "Email já verificado";
         text.textContent =
-          "Esse email já foi confirmado anteriormente. Você já pode acessar o app.";
+          "Seu endereço de email foi confirmado. Você já pode voltar ao app e fazer login.";
       } else {
         box.classList.add("error");
-        title.textContent = "Erro na Verificação";
+        title.textContent = "Ops!";
         text.textContent =
-          msg ||
-          "Ocorreu um problema ao verificar seu email. Faça login no app para que um novo email seja enviado.";
+          "Não foi possível processar sua solicitação. Tente novamente.";
       }
     </script>
   </body>

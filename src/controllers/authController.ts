@@ -2,94 +2,83 @@ import { generateToken } from "../utils/jwt";
 import db from "../utils/db";
 import { findUserByEmail } from "./userController";
 import { compare } from "bcryptjs";
-import {
-  sendResetEmail,
-  sendVerificationEmail,
-} from "../services/emailService";
+import { sendResetEmail } from "../services/emailService";
 import { hashSync } from "bcryptjs";
+import { supabase } from "../utils/supabase";
 
 export const login = async (req, res) => {
   try {
-    const userData = req.body;
-    if (!userData.email || !userData.password) {
-      res.status(400);
-      throw new Error("Precisa de email e senha.");
+    const { email, password } = req.body;
+
+    if (!email?.trim() || !password?.trim()) {
+      return res.status(400).json({ message: "Precisa de email e senha." });
     }
 
-    const existingUser = await findUserByEmail(userData.email);
+    // 1. Autentica no Supabase
+    const { data: authData, error: authError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (!existingUser) {
-      return res.status(403).json({ message: "Credenciais invalidas." });
+    if (authError) {
+      console.error("Supabase login error:", authError.message);
+      return res.status(403).json({ message: "Credenciais inválidas." });
     }
 
-    const validPassword = await compare(
-      userData.password,
-      existingUser.password
-    );
-
-    if (!validPassword) {
-      return res.status(403).json({ message: "Credenciais invalidas." });
+    const supabaseUser = authData.user;
+    if (!supabaseUser) {
+      return res.status(403).json({ message: "Usuário não encontrado." });
     }
 
-    if (!existingUser.isVerified) {
-      await sendVerificationEmail(existingUser.email, existingUser.verifyToken);
+    // 2. Checa se email está verificado
+    if (!supabaseUser.email_confirmed_at) {
       return res
         .status(403)
         .json({ message: "Email não verificado. Cheque seu email." });
     }
-    const token = generateToken(existingUser);
 
+    // 3. Busca usuário no Prisma
+    const prismaUser = await db.user.findUnique({
+      where: { id: supabaseUser.id },
+    });
+
+    if (!prismaUser) {
+      return res
+        .status(403)
+        .json({ message: "Usuário não encontrado no banco." });
+    }
+
+    // 4. Gera JWT próprio usando suas funções
+    const token = generateToken(prismaUser);
+
+    await db.user.update({
+      where: { id: prismaUser.id },
+      data: { isVerified: true },
+    });
+
+    // 5. Retorna token e dados do usuário
     return res.status(200).json({
       token: token,
-      userId: existingUser.id,
-      name: existingUser.name,
+      userId: prismaUser.id,
+      name: prismaUser.name,
     });
-  } catch (error) {
-    const err = error.message;
-    console.log(err);
-    return res.status(400).json({ message: err });
+  } catch (error: any) {
+    console.error("Erro no login:", error.message);
+    return res.status(400).json({ message: error.message });
   }
 };
 
 export const verifyEmail = async (req, res) => {
   try {
-    const { token } = req.query;
-
-    if (!token) {
-      return res.redirect(
-        "/email-verified.html?status=error&msg=Token inválido. Tente fazer login novamente para receber um novo email de verificação."
-      );
-    }
-
-    const user = await db.user.findUnique({
-      where: { verifyToken: token as string },
-    });
-
-    if (!user) {
-      return res.redirect(
-        "/email-verified.html?status=error&msg=Token inválido ou expirado. Faça login no app para que um novo email de verificação seja enviado."
-      );
-    }
-
-    if (user.isVerified) {
-      return res.redirect("/email-verified.html?status=already");
-    }
-
-    await db.user.update({
-      where: { id: user.id },
-      data: {
-        isVerified: true,
-      },
-    });
-
-    // Sucesso
-    return res.redirect("/email-verified.html?status=success");
+    return res.redirect("/email-verified.html#type=success");
   } catch (error: any) {
     return res.redirect(
-      `/email-verified.html?status=error&msg=${encodeURIComponent(
-        error.message +
-          ". Tente fazer login novamente para receber um novo email de verificação."
-      )}`
+      "/email-verified.html#type=error&msg=" +
+        encodeURIComponent(
+          error.message +
+            ". Tente fazer login novamente para receber um novo email de verificação."
+        )
     );
   }
 };
@@ -108,27 +97,26 @@ export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const user = await db.user.findUnique({ where: { email } });
-
-    if (!user) {
-      throw new Error("Email invalido");
+    if (!email?.trim()) {
+      return res.status(400).json({ message: "Email é obrigatório." });
     }
 
-    if (user) {
-      const token = crypto.randomUUID();
-      await db.user.update({
-        where: { id: user.id },
-        data: {
-          resetToken: token,
-          resetTokenExpires: new Date(Date.now() + 30 * 60 * 1000),
-        },
-      });
-      await sendResetEmail(email, token);
+    const redirectUrl = `${process.env.APP_URL}/reset-password.html`; // sua página frontend
+
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+
+    if (error) {
+      console.error("Supabase forgotPassword error:", error.message);
+      return res.status(400).json({ message: error.message });
     }
-    res.status(200).json({ message: "Email enviado" });
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: error.message });
+
+    return res.status(200).json({
+      message: "E-mail de redefinição enviado. Verifique sua caixa de entrada.",
+    });
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
   }
 };
 
