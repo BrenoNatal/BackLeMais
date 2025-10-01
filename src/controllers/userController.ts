@@ -461,6 +461,7 @@ export const updateUserImage = async (req, res) => {
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const fileName = `profile-images/profiles/${userId}_${timestamp}.${fileExt}`;
     const filePath = `${fileName}`;
+    console.log(filePath);
 
     // Upload para o Supabase Storage
     const { error } = await supabase.storage
@@ -471,7 +472,7 @@ export const updateUserImage = async (req, res) => {
       });
 
     if (error) throw error;
-
+    console.log(error);
     // Gera URL pública (se bucket for público)
     const { data } = supabase.storage
       .from("profile-images")
