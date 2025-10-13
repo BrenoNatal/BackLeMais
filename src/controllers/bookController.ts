@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import db from "../utils/db";
+import { Prisma } from "../../prisma/app/generated/prisma/client";
 
 // GET: Listagem e busca
 export const getDBBookByOLId = async (req: Request, res: Response) => {
@@ -78,16 +79,36 @@ export const getUserBooksByIds = async (req: Request, res: Response) => {
 export const createBook = async (req, res) => {
   try {
     const bookData = req.body;
-
-    const book = await db.book.create({
-      data: bookData,
-    });
-
-    res.status(200).json({ data: book });
+    const book = await db.book.create({ data: bookData });
+    res.status(201).json({ data: book });
   } catch (error) {
-    const err = error.message;
-    console.log(err);
-    res.status(400).json({ message: err });
+    console.error("Erro Prisma:", error);
+
+    console.log(error instanceof Prisma.PrismaClientKnownRequestError);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2000":
+          return res.status(400).json({
+            message:
+              "Um dos campos enviados ultrapassa o tamanho máximo permitido.",
+          });
+        case "P2002":
+          return res.status(409).json({
+            message: `Já existe um registro com o mesmo valor para o campo único "${error.meta?.target}".`,
+          });
+        case "P2025":
+          return res.status(404).json({
+            message: "Registro não encontrado para atualização ou exclusão.",
+          });
+        default:
+          return res.status(400).json({
+            message: `Erro no banco de dados (código ${error.code}).`,
+          });
+      }
+    }
+
+    // Outros erros genéricos
+    res.status(500).json({ message: "Erro interno ao criar o livro." });
   }
 };
 

@@ -284,8 +284,6 @@ export const getUserByIdAuth = async (req, res) => {
       },
     });
 
-    console.log("User Achievements: ", user.achievements);
-
     res.status(200).json({ data: user });
   } catch (error) {
     const err = error.message;
@@ -318,17 +316,30 @@ export const updateUser = async (req, res) => {
     const userId = req.params.id;
     const userData = req.body;
 
-    const user = await db.user.update({
-      where: {
-        id: userId,
-      },
-      data: userData,
+    console.log(userId);
+    console.log(userData);
+
+    // Buscar o usuário atual
+    const existingUser = await db.user.findUnique({
+      where: { id: userId },
     });
-    res.status(200).json({ data: user });
+
+    if (!existingUser) {
+      return res.status(404).json({ message: "Usuário não encontrado" });
+    }
+
+    // Combinar dados novos com os antigos
+    const updatedData = { ...existingUser, ...userData };
+
+    const user = await db.user.update({
+      where: { id: userId },
+      data: updatedData,
+    });
+
+    res.status(200).json({ message: "Perfil Editado Com Sucesso", data: user });
   } catch (error) {
-    const err = error.message;
-    console.log(err);
-    res.status(400).json({ message: err });
+    console.error(error);
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -461,7 +472,6 @@ export const updateUserImage = async (req, res) => {
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const fileName = `profile-images/profiles/${userId}_${timestamp}.${fileExt}`;
     const filePath = `${fileName}`;
-    console.log(filePath);
 
     // Upload para o Supabase Storage
     const { error } = await supabase.storage
@@ -472,7 +482,7 @@ export const updateUserImage = async (req, res) => {
       });
 
     if (error) throw error;
-    console.log(error);
+
     // Gera URL pública (se bucket for público)
     const { data } = supabase.storage
       .from("profile-images")

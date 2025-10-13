@@ -8,6 +8,7 @@ import {
   updateGroupImage,
 } from "../controllers/groupController";
 import { Router } from "express";
+import { isAuthenticated } from "../middlewares/authMiddleware";
 import multer from "multer";
 
 const groupRouter = Router();
@@ -18,7 +19,7 @@ groupRouter.get("/", getAllGroups);
 groupRouter.get("/group/:id", getGroupById);
 groupRouter.get("/groupRanks/:id", getGroupRanksById);
 groupRouter.put("/group/:id", updateGroup);
-groupRouter.delete("/group/:id", deleteGroup);
+groupRouter.delete("/group/:id", isAuthenticated, deleteGroup);
 groupRouter.post(
   "/group/groupImage/:groupId",
   upload.single("image"),

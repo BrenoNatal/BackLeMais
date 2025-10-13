@@ -1,7 +1,6 @@
-import { group } from "console";
 import db from "../utils/db";
-import { calculateUserAchievementsService } from "./achievementController";
 import { Goal } from "../../prisma/app/generated/prisma/client";
+import { Prisma } from "../../prisma/app/generated/prisma/client";
 
 export const updateGoalProgress = async (progress: number, goal: Goal) => {
   const updateProgress = progress + goal.progress;
@@ -190,37 +189,113 @@ export const createGoal = async (req, res) => {
     });
     res.status(200).json({ data: goal });
   } catch (error) {
-    const err = error.message;
-    console.log(err);
-    res.status(400).json({ message: err });
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2000":
+          return res.status(400).json({
+            message:
+              "Um dos campos enviados ultrapassa o tamanho máximo permitido.",
+          });
+        case "P2002":
+          return res.status(409).json({
+            message: `Já existe um registro com o mesmo valor para o campo único "${error.meta?.target}".`,
+          });
+        case "P2025":
+          return res.status(404).json({
+            message: "Registro não encontrado para atualização ou exclusão.",
+          });
+        default:
+          return res.status(400).json({
+            message: `Erro no banco de dados (código ${error.code}).`,
+          });
+      }
+    }
+
+    // Outros erros genéricos
+    if (error.message) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Erro interno ao criar o grupo." });
+    }
   }
 };
 
 export const updateGoal = async (req, res) => {
   try {
-    const goalId = req.params.id;
-    const goalData = req.body;
+    const {
+      goalId, // id da meta a ser atualizada
+      name,
+      description,
+      type,
+      objective,
+      endsAt,
+      userId,
+      groupId,
+      category,
+    } = req.body;
 
-    const goal = await db.goal.update({
-      where: {
-        id: goalId,
-      },
+    if (!goalId) {
+      return res.status(400).json({ message: "goalId é obrigatório." });
+    }
+
+    // Monta o objeto de update
+    let goalData: any = {
+      name,
+      description,
+      type,
+      objective: Number(objective),
+      endsAt: new Date(endsAt),
+    };
+    console.log(userId);
+    console.log(category);
+    if (userId && category) {
+      console.log("Ola");
+      goalData.category = {
+        // desconecta categorias antigas e conecta as novas
+        set: category.map((cat) => ({ id: cat.id })),
+      };
+      goalData.user = { connect: { id: userId } };
+    } else if (groupId) {
+      goalData.group = { connect: { id: groupId } };
+    }
+
+    const updatedGoal = await db.goal.update({
+      where: { id: goalId },
       data: goalData,
     });
 
-    if (goalData.status === "COMPLETED" && goal.userId) {
-      try {
-        await calculateUserAchievementsService(goal.userId);
-      } catch (achievementError: any) {
-        console.log("Erro ao atualizar conquistas:", achievementError.message);
+    res
+      .status(200)
+      .json({ data: updatedGoal, message: "Meta Edita Com Sucesso" });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2000":
+          return res.status(400).json({
+            message:
+              "Um dos campos enviados ultrapassa o tamanho máximo permitido.",
+          });
+        case "P2002":
+          return res.status(409).json({
+            message: `Já existe um registro com o mesmo valor para o campo único "${error.meta?.target}".`,
+          });
+        case "P2025":
+          return res.status(404).json({
+            message: "Registro não encontrado para atualização ou exclusão.",
+          });
+        default:
+          return res.status(400).json({
+            message: `Erro no banco de dados (código ${error.code}).`,
+          });
       }
     }
 
-    res.status(200).json({ data: goal });
-  } catch (error) {
-    const err = error.message;
-    console.log(err);
-    res.status(400).json({ message: err });
+    // Outros erros genéricos
+    if (error.message) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Erro interno ao atualizar a meta." });
+    }
   }
 };
 

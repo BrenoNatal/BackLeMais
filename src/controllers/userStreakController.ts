@@ -45,7 +45,7 @@ export const updateUserStreak = async (userId: string) => {
   }
 
   // Atualiza max streak
-  const newMax = Math.max(userStreak.max, newCurrent);
+  const newMax = Math.max(userStreak.max, newCurrent + 7 * newCompleted7);
 
   await db.userStreak.update({
     where: { userId },

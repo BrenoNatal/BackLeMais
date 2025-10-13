@@ -16,12 +16,12 @@ datasource db {
 
 model User {
   id                String            @id @default(uuid())
-  email             String            @unique
+  email             String            @unique @db.VarChar(255)
   isVerified        Boolean           @default(false)
   verifyToken       String?           @unique
   password          String
-  name              String
-  username          String            @unique
+  name              String            @db.VarChar(100)
+  username          String            @unique @db.VarChar(30)
   profileImageUrl   String            @default("https://uxxggsabskosuakbqpji.supabase.co/storage/v1/object/public/profile-images/profile-images/profiles/default.png")
   friendOf          Friendship[]      @relation("friendOf")
   friends           Friendship[]      @relation("user")
@@ -54,11 +54,11 @@ model Book {
   olWorkId      String
   olBookId      String?
   cover         String
-  title         String
-  authors       String[]
-  description   String
-  publishers    String[]
-  publishDate   String
+  title         String       @db.VarChar(255)
+  authors       String[]     @db.VarChar(100)
+  description   String       @db.Text
+  publishers    String[]     @db.VarChar(100)
+  publishDate   String       @db.VarChar(20)
   numberOfPages String
   users         UserOnBook[]
 }
@@ -82,8 +82,8 @@ model UserOnBook {
 
 model Note {
   id               String     @id @default(uuid())
-  title            String
-  body             String
+  title            String     @db.VarChar(100)
+  body             String     @db.Text
   user             User       @relation(fields: [userId], references: [id])
   userId           String
   userOnBook       UserOnBook @relation(fields: [userOnBookBookId, userOnBookUserId], references: [bookId, userId], onDelete: Cascade)
@@ -107,7 +107,7 @@ model BookCategoryOnBook {
 
 model Category {
   id     String               @id @default(uuid())
-  name   String
+  name   String               @db.VarChar(50)
   type   CategoryType
   user   User                 @relation(fields: [userId], references: [id])
   userId String
@@ -120,8 +120,8 @@ model Category {
 
 model Goal {
   id          String     @id @default(uuid())
-  name        String
-  description String
+  name        String     @db.VarChar(100)
+  description String     @db.Text
   type        TypeGoal
   category    Category[]
   progress    Int        @default(0)
@@ -139,8 +139,8 @@ model Goal {
 
 model Achievement {
   id          String            @id @default(uuid())
-  name        String
-  description String
+  name        String            @db.VarChar(100)
+  description String            @db.VarChar(255)
   type        AchievementType
   threshold   Int
   iconPath    String?
@@ -177,8 +177,8 @@ model UserStreak {
 
 model Group {
   id            String        @id @unique @default(uuid())
-  name          String        @unique
-  description   String
+  name          String        @unique @db.VarChar(100)
+  description   String        @db.VarChar(500)
   groupImageUrl String        @default("https://uxxggsabskosuakbqpji.supabase.co/storage/v1/object/public/group-images/group-images/groups/default.jpg")
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -188,7 +188,7 @@ model Group {
 }
 
 model UserOnGroup {
-  group                  Group      @relation(fields: [groupId], references: [id])
+  group                  Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId                String
   user                   User       @relation(fields: [userId], references: [id])
   userId                 String
@@ -203,8 +203,8 @@ model UserOnGroup {
 
 model Post {
   id        String   @id @unique @default(uuid())
-  title     String
-  body      String
+  title     String   @db.VarChar(150)
+  body      String   @db.Text
   group     Group    @relation(fields: [groupId], references: [id])
   groupId   String
   user      User     @relation(fields: [userId], references: [id])

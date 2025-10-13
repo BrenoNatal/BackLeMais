@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import db from "../utils/db";
 import { supabase } from "../utils/supabase";
+import { Prisma } from "../../prisma/app/generated/prisma/client";
 
 export const createGroup = async (req, res) => {
   try {
@@ -34,9 +35,34 @@ export const createGroup = async (req, res) => {
 
     res.status(200).json({ data: { group, creatorOfGroup } });
   } catch (error) {
-    const err = error.message;
-    console.log(err);
-    res.status(400).json({ message: err });
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2000":
+          return res.status(400).json({
+            message:
+              "Um dos campos enviados ultrapassa o tamanho máximo permitido.",
+          });
+        case "P2002":
+          return res.status(409).json({
+            message: `Já existe um registro com o mesmo valor para o campo único "${error.meta?.target}".`,
+          });
+        case "P2025":
+          return res.status(404).json({
+            message: "Registro não encontrado para atualização ou exclusão.",
+          });
+        default:
+          return res.status(400).json({
+            message: `Erro no banco de dados (código ${error.code}).`,
+          });
+      }
+    }
+
+    // Outros erros genéricos
+    if (error.message) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Erro interno ao criar o grupo." });
+    }
   }
 };
 
@@ -131,27 +157,99 @@ export const getGroupRanksById = async (req: Request, res: Response) => {
 
 export const updateGroup = async (req, res) => {
   try {
-    const groupId = req.params.id;
-    const groupData = req.body;
+    const { id } = req.params;
+    const { name, description } = req.body;
 
-    const group = await db.group.update({
-      where: {
-        id: groupId,
-      },
-      data: groupData,
+    if (!id) {
+      return res.status(400).json({ message: "ID do grupo é obrigatório." });
+    }
+
+    // Verifica se o grupo existe
+    const existingGroup = await db.group.findUnique({
+      where: { id: id },
     });
-    res.status(200).json({ data: group });
+
+    if (!existingGroup) {
+      return res.status(404).json({ message: "Grupo não encontrado." });
+    }
+
+    // Verifica se o novo nome já está sendo usado por outro grupo
+    if (name && name !== existingGroup.name) {
+      const duplicateGroup = await db.group.findUnique({
+        where: { name },
+      });
+
+      if (duplicateGroup) {
+        return res.status(400).json({ message: "Nome de grupo já utilizado." });
+      }
+    }
+
+    // Atualiza o grupo
+    const updatedGroup = await db.group.update({
+      where: { id: id },
+      data: {
+        name,
+        description,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Grupo atualizado com sucesso.",
+      data: updatedGroup,
+    });
   } catch (error) {
-    const err = error.message;
-    console.log(err);
-    res.status(400).json({ message: err });
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2000":
+          return res.status(400).json({
+            message:
+              "Um dos campos enviados ultrapassa o tamanho máximo permitido.",
+          });
+        case "P2002":
+          return res.status(409).json({
+            message: `Já existe um registro com o mesmo valor para o campo único "${error.meta?.target}".`,
+          });
+        case "P2025":
+          return res.status(404).json({
+            message: "Registro não encontrado para atualização.",
+          });
+        default:
+          return res.status(400).json({
+            message: `Erro no banco de dados (código ${error.code}).`,
+          });
+      }
+    }
+
+    console.error("Erro ao atualizar grupo:", error);
+    return res.status(500).json({
+      message: error.message || "Erro interno ao atualizar o grupo.",
+    });
   }
 };
 
 export const deleteGroup = async (req, res) => {
   try {
     const groupId = req.params.id;
-    const group = await db.group.delete({
+    const userId = req.payload.userId;
+
+    const group = await db.group.findUnique({
+      where: {
+        id: groupId,
+      },
+      select: {
+        users: {
+          where: {
+            type: { equals: "CREATOR" },
+          },
+        },
+      },
+    });
+
+    if (group.users[0].userId != userId) {
+      throw new Error("Usuario sem autorização para realizar essa operação.");
+    }
+
+    await db.group.delete({
       where: {
         id: groupId,
       },
