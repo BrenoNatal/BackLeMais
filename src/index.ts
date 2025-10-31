@@ -16,6 +16,8 @@ import bookCategoryOnBookRouter from "./routes/bookCategoryOnBookRoutes";
 import achievementRouter from "./routes/achievementRoutes";
 import userStreakRouter from "./routes/userStreakRoutes";
 import path from "path";
+import http from "http";
+import https from "https";
 
 const app = express();
 
@@ -47,5 +49,39 @@ app.use("/achievements", achievementRouter);
 app.use("/userStreak", userStreakRouter);
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`✅ Server is running at http://localhost:${port}`);
+
+  // chama função keepAlive depois que o servidor inicia
+  keepAlive();
 });
+
+/**
+ * Função que faz ping periódico para manter a instância Render acordada.
+ * Usa apenas módulos nativos do Node.js (http/https).
+ */
+
+function keepAlive() {
+  const url = process.env.APP_URL;
+  const interval = 4 * 60 * 1000; // 4 minutos
+
+  console.log("⏱️ Keep-alive iniciado:", url);
+
+  setInterval(() => {
+    const client = url.startsWith("https") ? https : http;
+    1;
+    const req = client.get(url, (res) => {
+      console.log(`[${new Date().toISOString()}] Ping OK (${res.statusCode})`);
+      // consome o body para evitar memory leak
+      res.on("data", () => {});
+      res.on("end", () => {});
+    });
+
+    req.on("error", (err) => {
+      console.error(
+        `[${new Date().toISOString()}] Falha no ping: ${err.message}`
+      );
+    });
+
+    req.end();
+  }, interval);
+}
